@@ -80,6 +80,22 @@ typedef FLSliceResult FLStringResult;
 #endif
 
 
+/** Exactly like memcmp, but safely handles the case where a or b is NULL and size is 0 (by returning 0),
+    instead of producing "undefined behavior" as per the C spec. */
+static inline FLPURE int FLMemCmp(const void *a, const void *b, size_t size) FLAPI {
+    if (_usuallyFalse(size == 0))
+        return 0;
+    return memcmp(a, b, size);
+}
+
+/** Exactly like memcmp, but safely handles the case where dst or src is NULL and size is 0 (as a no-op),
+    instead of producing "undefined behavior" as per the C spec. */
+static inline void FLMemCpy(void *dst, const void *src, size_t size) FLAPI {
+    if (_usuallyTrue(size > 0))
+        memcpy(dst, src, size);
+}
+
+
 /** Returns a slice pointing to the contents of a C string.
     It's OK to pass NULL; this returns an empty slice.
     (Performance is O(n) with the length of the string, since it has to call `strlen`.) */

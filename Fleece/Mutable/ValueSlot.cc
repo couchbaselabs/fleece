@@ -238,7 +238,7 @@ namespace fleece { namespace impl {
         releaseValue();
         if (1 + bytes.size <= kInlineCapacity) {
             _inlineData[0] = uint8_t((valueTag << 4) | tiny);
-            memcpy(&_inlineData[1], bytes.buf, bytes.size);
+            FLMemCpy(&_inlineData[1], bytes.buf, bytes.size);
             _isInline = true;
         } else {
             _asValue = retain(HeapValue::create(valueTag, tiny, bytes)->asValue());
@@ -251,7 +251,7 @@ namespace fleece { namespace impl {
         if (s.size + 1 <= kInlineCapacity) {
             // Short strings can go inline:
             setInline(valueTag, (int)s.size);
-            memcpy(&_inlineData[1], s.buf, s.size);
+            FLMemCpy(&_inlineData[1], s.buf, s.size);
         } else {
             releaseValue();
             _asValue = retain(HeapValue::createStr(valueTag, s)->asValue());

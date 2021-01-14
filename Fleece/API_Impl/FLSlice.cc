@@ -22,20 +22,22 @@
 #include "betterassert.hh"
 
 
+__hot
 bool FLSlice_Equal(FLSlice a, FLSlice b) FLAPI {
-    return a.size==b.size && memcmp(a.buf, b.buf, a.size) == 0;
+    return a.size == b.size && FLMemCmp(a.buf, b.buf, a.size) == 0;
 }
 
 
+__hot
 int FLSlice_Compare(FLSlice a, FLSlice b) FLAPI {
-    // Optimized for speed
+    // Optimized for speed, not simplicity!
     if (a.size == b.size)
-        return memcmp(a.buf, b.buf, a.size);
+        return FLMemCmp(a.buf, b.buf, a.size);
     else if (a.size < b.size) {
-        int result = memcmp(a.buf, b.buf, a.size);
+        int result = FLMemCmp(a.buf, b.buf, a.size);
         return result ? result : -1;
     } else {
-        int result = memcmp(a.buf, b.buf, b.size);
+        int result = FLMemCmp(a.buf, b.buf, b.size);
         return result ? result : 1;
     }
 }
@@ -132,7 +134,7 @@ FLSliceResult FLSlice_Copy(FLSlice s) FLAPI {
     auto sb = new (s.size) sharedBuffer;
     if (!sb)
         return {};
-    memcpy(&sb->_buf, s.buf, s.size);
+    FLMemCpy(&sb->_buf, s.buf, s.size);
     return {&sb->_buf, s.size};
 }
 

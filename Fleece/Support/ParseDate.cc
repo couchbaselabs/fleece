@@ -403,7 +403,7 @@ namespace fleece {
         auto cstr = (char*)malloc(date.size + 1);
         if (!cstr)
             return kInvalidDate;
-        memcpy(cstr, date.buf, date.size);
+        FLMemCpy(cstr, date.buf, date.size);
         cstr[date.size] = 0;
         int64_t timestamp = ParseISO8601Date(cstr);
         free(cstr);

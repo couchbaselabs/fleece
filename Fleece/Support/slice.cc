@@ -36,19 +36,6 @@ namespace fleece {
 
     bool pure_slice::containsAddress(const void *addr) const noexcept {
         return addr >= buf && addr < end();
-    } 
-
-    __hot int pure_slice::compare(pure_slice b) const noexcept {
-        // Optimized for speed
-        if (this->size == b.size)
-            return memcmp(this->buf, b.buf, this->size);
-        else if (this->size < b.size) {
-            int result = memcmp(this->buf, b.buf, this->size);
-            return result ? result : -1;
-        } else {
-            int result = memcmp(this->buf, b.buf, b.size);
-            return result ? result : 1;
-        }
     }
 
     __hot int pure_slice::caseEquivalentCompare(pure_slice b) const noexcept {
@@ -120,16 +107,20 @@ namespace fleece {
     __hot bool slice::readInto(slice dst) noexcept {
         if (dst.size > size)
             return false;
-        ::memcpy((void*)dst.buf, buf, dst.size);
-        moveStart(dst.size);
+        if (_usuallyTrue(dst.size > 0)) {
+            ::memcpy((void*)dst.buf, buf, dst.size);
+            moveStart(dst.size);
+        }
         return true;
     }
 
     __hot bool slice::writeFrom(slice src) noexcept {
         if (src.size > size)
             return false;
-        ::memcpy((void*)buf, src.buf, src.size);
-        moveStart(src.size);
+        if (_usuallyTrue(src.size > 0)) {
+            ::memcpy((void*)buf, src.buf, src.size);
+            moveStart(src.size);
+        }
         return true;
     }
 
@@ -256,7 +247,7 @@ namespace fleece {
         if (buf == nullptr)
             return nullslice;
         void* copied = newBytes(size);
-        ::memcpy(copied, buf, size);
+        FLMemCpy(copied, buf, size);
         return slice(copied, size);
     }
 
@@ -266,12 +257,12 @@ namespace fleece {
     }
     
     bool pure_slice::hasPrefix(pure_slice s) const noexcept {
-        return s.size > 0 && size >= s.size && ::memcmp(buf, s.buf, s.size) == 0;
+        return s.size > 0 && size >= s.size && FLMemCmp(buf, s.buf, s.size) == 0;
     }
 
     bool pure_slice::hasSuffix(pure_slice s) const noexcept {
         return s.size > 0 && size >= s.size
-            && ::memcmp(offsetby(buf, size - s.size), s.buf, s.size) == 0;
+            && FLMemCmp(offsetby(buf, size - s.size), s.buf, s.size) == 0;
     }
 
     const void* pure_slice::containsBytes(pure_slice s) const noexcept {
@@ -299,8 +290,9 @@ namespace fleece {
 
 
     bool pure_slice::toCString(char *str, size_t bufSize) const noexcept {
+        assert(bufSize > 0);
         size_t n = std::min(size, bufSize-1);
-        memcpy(str, buf, n);
+        FLMemCpy(str, buf, n);
         str[n] = 0;
         return n == size;
     }
@@ -385,7 +377,7 @@ namespace fleece {
     alloc_slice alloc_slice::nullPaddedString(pure_slice str) {
         // Leave a trailing null byte after the end, so it can be used as a C string
         alloc_slice a(str.size + 1);
-        memcpy((char*)a.buf, str.buf, str.size);
+        FLMemCpy((char*)a.buf, str.buf, str.size);
         ((char*)a.buf)[str.size] = '\0';
         a.shorten(str.size);            // the null byte is not part of the slice
         return a;
@@ -448,18 +440,20 @@ namespace fleece {
             reset(newSize);
         } else {
             alloc_slice newSlice(newSize);
-            memcpy((void*)newSlice.buf, buf, std::min(size, newSize));
+            FLMemCpy((void*)newSlice.buf, buf, std::min(size, newSize));
             *this = std::move(newSlice);
         }
     }
 
 
     void alloc_slice::append(pure_slice suffix) {
+        if (_usuallyFalse(suffix.size == 0))
+            return;
         if (buf)
             assert_precondition(!containsAddress(suffix.buf) && !containsAddress(suffix.end()));
         size_t oldSize = size;
         resize(oldSize + suffix.size);
-        memcpy((void*)offset(oldSize), suffix.buf, suffix.size);
+        ::memcpy((void*)offset(oldSize), suffix.buf, suffix.size);
     }
 
 }

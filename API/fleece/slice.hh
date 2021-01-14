@@ -91,6 +91,7 @@ namespace fleece {
 #ifdef SLICE_SUPPORTS_STRING_VIEW
         constexpr pure_slice(string_view str) noexcept            :pure_slice(str.data(), str.length()) {}
 #endif
+        operator FLSlice () const noexcept                          {return {buf, size};}
 
         explicit operator bool() const noexcept FLPURE              {return buf != nullptr;}
 
@@ -112,11 +113,10 @@ namespace fleece {
         const uint8_t* findAnyByteOf(pure_slice targetBytes) const noexcept FLPURE;
         const uint8_t* findByteNotIn(pure_slice targetBytes) const noexcept FLPURE;
 
-        int compare(pure_slice) const noexcept FLPURE;
+        int compare(pure_slice s) const noexcept FLPURE          {return FLSlice_Compare(*this, s);}
         int caseEquivalentCompare(pure_slice) const noexcept FLPURE;
         bool caseEquivalent(pure_slice) const noexcept FLPURE;
-        bool operator==(const pure_slice &s) const noexcept FLPURE       {return size==s.size &&
-                                                                 memcmp(buf, s.buf, size) == 0;}
+        bool operator==(const pure_slice &s) const noexcept FLPURE {return FLSlice_Equal(*this, s);}
         bool operator!=(const pure_slice &s) const noexcept FLPURE       {return !(*this == s);}
         bool operator<(pure_slice s) const noexcept FLPURE               {return compare(s) < 0;}
         bool operator>(pure_slice s) const noexcept FLPURE               {return compare(s) > 0;}
@@ -265,7 +265,6 @@ namespace fleece {
         void free() noexcept;
 
         constexpr slice(const FLSlice &s) noexcept           :slice(s.buf, s.size) { }
-        operator FLSlice () const noexcept                   {return {buf, size};}
         inline explicit operator FLSliceResult () const noexcept;
 
 #ifdef __APPLE__
@@ -365,7 +364,6 @@ namespace fleece {
         static void retain(slice s) noexcept                {((alloc_slice*)&s)->retain();}
         static void release(slice s) noexcept               {((alloc_slice*)&s)->release();}
 
-        operator FLSlice () const noexcept                  {return {buf, size};}
         operator FLHeapSlice () const noexcept              {return {buf, size};}
         explicit operator FLSliceResult () noexcept         {retain(); return {(void*)buf, size};}
 

@@ -48,7 +48,7 @@ namespace fleece { namespace impl { namespace internal {
 
     HeapValue* HeapValue::create(tags tag, int tiny, slice extraData) {
         auto hv = new (extraData.size) HeapValue(tag, tiny);
-        memcpy(&hv->_header + 1, extraData.buf, extraData.size);
+        FLMemCpy(&hv->_header + 1, extraData.buf, extraData.size);
         return hv;
     }
 
