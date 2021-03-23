@@ -85,33 +85,6 @@
 
 #endif
 
-
-// Note: Code below adapted from libmdbx source code.
-
-// Applies a specific optimization level to a function, e.g. __optimize("O3") or __optimize("Os"),
-// Has no effect in an unoptimized build.
-#ifndef __optimize
-#   if defined(__OPTIMIZE__)
-#     if defined(__clang__) && !__has_attribute(__optimize__)
-#           define __optimize(ops)
-#       elif defined(__GNUC__) || __has_attribute(__optimize__)
-#           define __optimize(ops) __attribute__((__optimize__(ops)))
-#       else
-#           define __optimize(ops)
-#       endif
-#   else
-#           define __optimize(ops)
-#   endif
-#endif /* __optimize */
-
-#if defined(__clang__)
-    #define HOTLEVEL "Ofast"
-    #define COLDLEVEL "Oz"
-#else
-    #define HOTLEVEL "O3"
-    #define COLDLEVEL "Os"
-#endif
-
 // Platform independent string substitutions
 #if defined(__linux__)
 #define PRIms "ld"

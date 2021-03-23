@@ -10,6 +10,8 @@
 
 // The __has_xxx() macros are only(?) implemented by Clang. (Except GCC has __has_attribute...)
 // Define them to return 0 on other compilers.
+// https://clang.llvm.org/docs/AttributeReference.html
+// https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html
 
 #ifndef __has_attribute
     #define __has_attribute(x) 0
@@ -27,9 +29,6 @@
     #define __has_extension(x) 0
 #endif
 
-
-// https://clang.llvm.org/docs/AttributeReference.html
-// https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html
 
 #if defined(__clang__) || defined(__GNUC__)
     // Tells the optimizer that a function's return value is never NULL.
@@ -51,13 +50,15 @@
     #define _usuallyFalse(VAL)              (VAL)
 #endif
 
+
 // Declares that a parameter must not be NULL. The compiler can sometimes detect violations
 // of this at compile time, if the parameter value is a literal.
 // The Clang Undefined-Behavior Sanitizer will detect all violations at runtime.
+// GCC also has an attribute with this name, but it's incompatible: it can't be applied to a
+// parameter, it has to come after the function and list parameters by number. Oh well.
 #ifdef __clang__
     #define NONNULL                     __attribute__((nonnull))
 #else
-    // GCC's' `nonnull` works differently (not as well: requires parameter numbers be given)
     #define NONNULL
 #endif
 
@@ -116,24 +117,51 @@
     #endif
 #endif // __cplusplus
 
-#else // FLEECE_BASE_H
-    #warn "Compiler is not honoring #pragma once"
-#endif
 
-// Used for functions that are annoying to step into in the debugger, like RefCounted's operator->,
-// or slice constructors. Suppressing debug info for those functions means the debugger will
-// continue through them when stepping in.
+// STEPOVER is for trivial little glue functions that are annoying to step into in the debugger
+// on the way to the function you _do_ want to step into. Examples are RefCounted's operator->,
+// or slice constructors. Suppressing debug info for those functions means the debugger
+// will continue through them when stepping in.
+// (It probably also makes the debug-symbol file smaller.)
 #if __has_attribute(nodebug)
     #define STEPOVER __attribute((nodebug))
 #else
     #define STEPOVER
 #endif
 
-// Marks a function as being a hot-spot. Optimizes it for speed and may move it to a common
+
+// Note: Code below adapted from libmdbx source code.
+
+// `__optimize` is used by the macros below -- you should probably not use it directly, instead
+// use `__hot` or `__cold`. It applies a specific compiler optimization level to a function,
+// e.g. __optimize("O3") or __optimize("Os"). Has no effect in an unoptimized build.
+#ifndef __optimize
+#   if defined(__OPTIMIZE__)
+#       if defined(__clang__) && !__has_attribute(__optimize__)
+#           define __optimize(ops)
+#       elif defined(__GNUC__) || __has_attribute(__optimize__)
+#           define __optimize(ops) __attribute__((__optimize__(ops)))
+#       else
+#           define __optimize(ops)
+#       endif
+#   else
+#           define __optimize(ops)
+#   endif
+#endif /* __optimize */
+
+#if defined(__clang__)
+    #define HOTLEVEL "Ofast"
+    #define COLDLEVEL "Oz"
+#else
+    #define HOTLEVEL "O3"
+    #define COLDLEVEL "Os"
+#endif
+
+// `__hot` marks a function as being a hot-spot. Optimizes it for speed and may move it to a common
 // code section for hot functions. Has no effect in an unoptimized build.
 #ifndef __hot
 #   if defined(__OPTIMIZE__)
-#       if defined(__clang__) && !__has_attribute(__hot_) \
+#       if defined(__clang__) && !__has_attribute(__hot__) \
         && __has_attribute(__section__) && (defined(__linux__) || defined(__gnu_linux__))
             /* just put frequently used functions in separate section */
 #           define __hot __attribute__((__section__("text.hot"))) __optimize(HOTLEVEL)
@@ -147,15 +175,15 @@
 #   endif
 #endif /* __hot */
 
-// Marks a function as being rarely used (e.g. error handling.) Optimizes it for size and
+// `__cold` marks a function as being rarely used (e.g. error handling.) Optimizes it for size and
 // moves it to a common code section for cold functions. Has no effect in an unoptimized build.
 #ifndef __cold
 #   if defined(__OPTIMIZE__)
-#       if defined(__clang__) && !__has_attribute(cold) \
+#       if defined(__clang__) && !__has_attribute(__cold__) \
         && __has_attribute(__section__) && (defined(__linux__) || defined(__gnu_linux__))
             /* just put infrequently used functions in separate section */
 #           define __cold __attribute__((__section__("text.unlikely"))) __optimize(COLDLEVEL)
-#       elif defined(__GNUC__) || __has_attribute(cold)
+#       elif defined(__GNUC__) || __has_attribute(__cold__)
 #           define __cold __attribute__((__cold__)) __optimize(COLDLEVEL)
 #       else
 #           define __cold __optimize(COLDLEVEL)
@@ -165,6 +193,12 @@
 #   endif
 #endif /* __cold */
 
+
 #ifndef _MSC_VER
     #define WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP) 0
+#endif
+
+
+#else // FLEECE_BASE_H
+#warn "Compiler is not honoring #pragma once"
 #endif
