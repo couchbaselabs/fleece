@@ -79,22 +79,10 @@
     #define __printflike(fmtarg, firstvararg) __attribute__((__format__ (__printf__, fmtarg, firstvararg)))
     #endif
 
-    #define WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP) 0
-
     // Windows has underscore prefixes before these function names, so define a common name
     #define cbl_strdup strdup
     #define cbl_getcwd getcwd
 
-#endif
-
-
-// Used for functions that are annoying to step into in the debugger, like RefCounted's operator->,
-// or slice constructors. Suppressing debug info for those functions means the debugger will
-// continue through them when stepping in.
-#if __has_attribute(nodebug)
-    #define STEPOVER __attribute((nodebug))
-#else
-    #define STEPOVER
 #endif
 
 
@@ -123,42 +111,6 @@
     #define HOTLEVEL "O3"
     #define COLDLEVEL "Os"
 #endif
-
-// Marks a function as being a hot-spot. Optimizes it for speed and may move it to a common
-// code section for hot functions. Has no effect in an unoptimized build.
-#ifndef __hot
-#   if defined(__OPTIMIZE__)
-#       if defined(__clang__) && !__has_attribute(__hot_) \
-        && __has_attribute(__section__) && (defined(__linux__) || defined(__gnu_linux__))
-            /* just put frequently used functions in separate section */
-#           define __hot __attribute__((__section__("text.hot"))) __optimize(HOTLEVEL)
-#       elif defined(__GNUC__) || __has_attribute(__hot__)
-#           define __hot __attribute__((__hot__)) __optimize(HOTLEVEL)
-#       else
-#           define __hot  __optimize(HOTLEVEL)
-#       endif
-#   else
-#       define __hot
-#   endif
-#endif /* __hot */
-
-// Marks a function as being rarely used (e.g. error handling.) Optimizes it for size and
-// moves it to a common code section for cold functions. Has no effect in an unoptimized build.
-#ifndef __cold
-#   if defined(__OPTIMIZE__)
-#       if defined(__clang__) && !__has_attribute(cold) \
-        && __has_attribute(__section__) && (defined(__linux__) || defined(__gnu_linux__))
-            /* just put infrequently used functions in separate section */
-#           define __cold __attribute__((__section__("text.unlikely"))) __optimize(COLDLEVEL)
-#       elif defined(__GNUC__) || __has_attribute(cold)
-#           define __cold __attribute__((__cold__)) __optimize(COLDLEVEL)
-#       else
-#           define __cold __optimize(COLDLEVEL)
-#       endif
-#   else
-#       define __cold
-#   endif
-#endif /* __cold */
 
 // Platform independent string substitutions
 #if defined(__linux__)

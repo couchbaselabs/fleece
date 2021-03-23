@@ -19,6 +19,7 @@
 #include "Base64.hh"
 #include "encode.h"
 #include "decode.h"
+#include "betterassert.hh"
 
 namespace fleece { namespace base64 {
 

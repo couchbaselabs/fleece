@@ -55,6 +55,13 @@ namespace fleece {
     }
 
 
+    void slice::shorten(size_t s) {
+        assert_precondition(s <= size);
+        setSize(s);
+    }
+
+
+
     void slice::setStart(const void *s) noexcept {
         assert_precondition(s <= end());
         set(s, (uint8_t*)end() - (uint8_t*)s);
@@ -533,5 +540,11 @@ namespace fleece {
         resize(oldSize + suffix.size);
         memcpy((void*)offset(oldSize), suffix.buf, suffix.size);
     }
+
+    void alloc_slice::shorten(size_t s) {
+        assert_precondition(s <= size);
+        pure_slice::setSize(s);
+    }
+
 
 }

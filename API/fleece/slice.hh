@@ -26,7 +26,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <string>
-#include "betterassert.hh"
 
 #ifdef __OBJC__
 #import <Foundation/NSData.h>
@@ -265,7 +264,7 @@ namespace fleece {
 
         void setBuf(const void *b NONNULL) noexcept         {pure_slice::setBuf(b);}
         void setSize(size_t s) noexcept                     {pure_slice::setSize(s);}
-        void shorten(size_t s)                              {assert_precondition(s <= size); setSize(s);}
+        void shorten(size_t s);
         void wipe() noexcept;
 
         void setEnd(const void* e NONNULL) noexcept         {setSize((uint8_t*)e - (uint8_t*)buf);}
@@ -380,8 +379,8 @@ namespace fleece {
         void resize(size_t newSize);
         void append(pure_slice);
         void wipe() noexcept                                {slice(*this).wipe();}
-        void shorten(size_t s)                              {assert_precondition(s <= size);
-                                                             pure_slice::setSize(s);}
+        void shorten(size_t s);
+
         alloc_slice& retain() noexcept                      {_FLBuf_Retain(buf); return *this;}
         inline void release() noexcept                      {_FLBuf_Release(buf);}
 
