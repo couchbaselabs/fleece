@@ -144,8 +144,10 @@ namespace fleece {
         template <typename U>
         Retained& operator= (Retained<U> &&r) noexcept {
             auto oldRef = _ref;
-            _ref = std::move(r).detach();
-            release(oldRef);
+            if (oldRef != r._ref) { // necessary to avoid premature release
+                _ref = std::move(r).detach();
+                release(oldRef);
+            }
             return *this;
         }
 
