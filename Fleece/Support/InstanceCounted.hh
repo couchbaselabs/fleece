@@ -26,7 +26,7 @@ namespace fleece {
     public:
 
         /** Total number of live objects that implement InstanceCounted. */
-        static int count()                          {return gInstanceCount;}
+        static int liveInstanceCount()              {return gInstanceCount;}
 
 #if INSTANCECOUNTED_TRACK
         InstanceCounted()                           {track();}
