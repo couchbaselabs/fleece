@@ -54,7 +54,7 @@ namespace fleece {
 
 
     TEST_CASE("MutableArray set values", "[Mutable]") {
-        static constexpr size_t kSize = 11;
+        static constexpr size_t kSize = 17;
         Retained<MutableArray> ma = MutableArray::newArray();
 
         REQUIRE(ma->count() == 0);
@@ -87,10 +87,16 @@ namespace fleece {
         ma->set(8, "Hot dog"_sl);
         ma->set(9, float(M_PI));
         ma->set(10, M_PI);
+        ma->set(11, std::numeric_limits<uint64_t>::max());
+        ma->set(12, (int64_t)0x100000000LL);
+        ma->set(13, (uint64_t)0x100000000ULL);
+        ma->set(14, std::numeric_limits<int64_t>::min());
+        ma->set(15, (int64_t)9223372036854775807LL);
+        ma->set(16, (int64_t)-9223372036854775807LL);
 
         static const valueType kExpectedTypes[kSize] = {
             kNull, kBoolean, kBoolean, kNumber, kNumber, kNumber, kNumber, kNumber, kString,
-            kNumber, kNumber,
+            kNumber, kNumber, kNumber, kNumber, kNumber, kNumber, kNumber, kNumber
         };
         for (int i = 0; i < 9; i++)
             CHECK(ma->get(i)->type() == kExpectedTypes[i]);
@@ -104,6 +110,12 @@ namespace fleece {
         CHECK(ma->get(8)->asString() == "Hot dog"_sl);
         CHECK(ma->get(9)->asFloat() == float(M_PI));
         CHECK(ma->get(10)->asDouble() == M_PI);
+        CHECK(ma->get(11)->asUnsigned() == std::numeric_limits<uint64_t>::max());
+        CHECK(ma->get(12)->asInt() == 0x100000000LL);
+        CHECK(ma->get(13)->asUnsigned() == 0x100000000ULL);
+        CHECK(ma->get(14)->asInt() == std::numeric_limits<int64_t>::min());
+        CHECK(ma->get(15)->asInt() == 9223372036854775807LL);
+        CHECK(ma->get(16)->asInt() == -9223372036854775807LL);
 
         {
             MutableArray::iterator i(ma);
@@ -117,16 +129,18 @@ namespace fleece {
             CHECK(!i);
         }
 
-        CHECK(ma->asArray()->toJSON() == "[null,false,true,0,-123,2017,123456789,-123456789,\"Hot dog\",3.1415927,3.141592653589793]"_sl);
+        CHECK(ma->asArray()->toJSON() == "[null,false,true,0,-123,2017,123456789,-123456789,\"Hot dog\",3.1415927,"
+              "3.141592653589793,18446744073709551615,4294967296,4294967296,"
+              "-9223372036854775808,9223372036854775807,-9223372036854775807]"_sl);
 
         ma->remove(3, 5);
-        CHECK(ma->count() == 6);
+        CHECK(ma->count() == 12);
         CHECK(ma->get(2)->type() == kBoolean);
         CHECK(ma->get(2)->asBool() == true);
         CHECK(ma->get(3)->type() == kString);
 
         ma->insert(1, 2);
-        CHECK(ma->count() == 8);
+        CHECK(ma->count() == 14);
         REQUIRE(ma->get(1)->type() == kNull);
         REQUIRE(ma->get(2)->type() == kNull);
         CHECK(ma->get(3)->type() == kBoolean);

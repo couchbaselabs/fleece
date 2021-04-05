@@ -133,7 +133,10 @@ namespace fleece { namespace impl {
 
     template <class INT>
     void ValueSlot::setInt(INT i) {
-        if (i < 2048 && (!numeric_limits<INT>::is_signed || -int(i) < 2048)) {
+        // In the following, int64_t(i) is to avoid compiler warning against comparision between unsigned and signed.
+        // If INT is unsigned, int64_t(i) won't be executed, that is, we won't actually convert uint64 to int64.
+        // We also assume the largest int representation is 64-bit.
+        if (i < 2048 && (!numeric_limits<INT>::is_signed || int64_t(i) > -2048)) {
             setInline(kShortIntTag, (i >> 8) & 0x0F);
             _inlineVal[1] = (uint8_t)(i & 0xFF);
         } else {
