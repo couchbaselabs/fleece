@@ -220,18 +220,23 @@ namespace fleece {
         pure_slice& operator=(const pure_slice &s) noexcept  {set(s.buf, s.size); return *this;}
 
         // like strlen but can run at compile time
-        static constexpr size_t _strlen(const char *str) noexcept FLPURE {
 #if __cplusplus >= 201400L || _MSVC_LANG >= 201400L
+        static constexpr size_t _strlen(const char *str) noexcept FLPURE {
             if (!str)
                 return 0;
             auto c = str;
             while (*c) ++c;
             return c - str;
-#else
-            // (In C++11 constexpr functions could not contain loops, so use recursion instead)
-            return (str && *str) ? (1 + _strlen(str+1)) : 0;
-#endif
         }
+#else
+        // (In C++11, constexpr functions couldn't contain loops; use (tail-)recursion instead)
+        static constexpr size_t _strlen(const char *str) noexcept FLPURE {
+            return str ? _strlen(str, 0) : 0;
+        }
+        static constexpr size_t _strlen(const char *str, size_t n) noexcept FLPURE {
+            return *str ? _strlen(str + 1, n + 1) : n;
+        }
+#endif
 
         // Throws std::bad_alloc, or if exceptions are disabled calls std::terminate()
         [[noreturn]] static void failBadAlloc();
