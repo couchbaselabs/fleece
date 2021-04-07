@@ -38,13 +38,13 @@ namespace fleece {
 #pragma mark - MISCELLANY:
 
 
-    void slice::wipe() noexcept {
+    void mutable_slice::wipe() noexcept {
         if (size > 0) {
 #if defined(_MSC_VER)
-            SecureZeroMemory((void*)buf, size);
+            SecureZeroMemory(buf, size);
 #elif defined(__STDC_LIB_EXT1__) || defined(__APPLE__)
             // memset_s is an optional feature of C11, and available in Apple's C library.
-            memset_s((void*)buf, size, 0, size);
+            memset_s(buf, size, 0, size);
 #else
             // Generic implementation (`volatile` ensures the writes will not be optimized away.)
             volatile unsigned char* p = (unsigned char *)buf;
@@ -234,19 +234,11 @@ namespace fleece {
     }
 
 
-    __hot bool slice::readInto(slice dst) noexcept {
-        if (dst.size > size)
+    __hot bool slice::readInto(void *dstBuf, size_t dstSize) noexcept {
+        if (dstSize > size)
             return false;
-        ::memcpy((void*)dst.buf, buf, dst.size);
-        moveStart(dst.size);
-        return true;
-    }
-
-    __hot bool slice::writeFrom(slice src) noexcept {
-        if (src.size > size)
-            return false;
-        ::memcpy((void*)buf, src.buf, src.size);
-        moveStart(src.size);
+        ::memcpy(dstBuf, buf, dstSize);
+        moveStart(dstSize);
         return true;
     }
 
@@ -261,15 +253,6 @@ namespace fleece {
         moveStart(1);
         return result;
     }
-
-    __hot bool slice::writeByte(uint8_t n) noexcept {
-        if (size == 0)
-            return false;
-        *((char*)buf) = n;
-        moveStart(1);
-        return true;
-    }
-
 
 #pragma mark - DECIMAL CONVERSION:
 
@@ -314,39 +297,8 @@ namespace fleece {
         return negative ? -(int64_t)n : (int64_t)n;
     }
 
-    __hot bool slice::writeDecimal(uint64_t n) noexcept {
-        // Optimized for speed; this is on a hot path in LiteCore
-        size_t len;
-        if (n < 10) {
-            if (size < 1)
-                return false;
-            *((char*)buf) = '0' + (char)n;
-            len = 1;
-        } else {
-            char temp[20]; // max length is 20 decimal digits
-            char *dst = &temp[20];
-            len = 0;
-            do {
-                *(--dst) = '0' + (n % 10);
-                n /= 10;
-                len++;
-            } while (n > 0);
-            if (size < len)
-                return false;
-            ::memcpy((void*)buf, dst, len);
-        }
-        moveStart(len);
-        return true;
-    }
-
 
 #pragma mark - HEX CONVERSION:
-
-
-    static inline char _hexDigit(int n) {
-        static constexpr const char kDigits[] = "0123456789abcdef";
-        return kDigits[n];
-    }
 
 
     uint64_t slice::readHex() noexcept {
@@ -361,36 +313,6 @@ namespace fleece {
                 break;          // Next digit would overflow uint64_t
         }
         return n;
-    }
-
-
-    bool slice::writeHex(slice src) noexcept {
-        if (_usuallyFalse(size < 2 * src.size))
-            return false;
-        auto dst = (char*)buf;
-        for (size_t i = 0; i < src.size; ++i) {
-            *dst++ = _hexDigit(src[i] >> 4);
-            *dst++ = _hexDigit(src[i] & 0x0F);
-        }
-        setStart(dst);
-        return true;
-    }
-
-
-    bool slice::writeHex(uint64_t n) noexcept {
-        char temp[16]; // max length is 16 hex digits
-        char *dst = &temp[16];
-        size_t len = 0;
-        do {
-            *(--dst) = _hexDigit(n & 0x0F);
-            n >>= 4;
-            len++;
-        } while (n > 0);
-        if (size < len)
-            return false;
-        ::memcpy((void*)buf, dst, len);
-        moveStart(len);
-        return true;
     }
 
 
@@ -425,12 +347,6 @@ namespace fleece {
         void* copied = newBytes(size);
         ::memcpy(copied, buf, size);
         return slice(copied, size);
-    }
-
-
-    void slice::free() noexcept {
-        ::free((void*)buf);
-        set(nullptr, 0);
     }
 
 

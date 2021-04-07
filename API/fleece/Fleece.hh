@@ -595,8 +595,6 @@ namespace fleece {
         const alloc_slice& data() const                 {return *this;}
         explicit operator bool () const                 {return Dict::operator bool();}
 
-        void wipe() { alloc_slice::wipe(); }
-
         // MI disambiguation:
         inline Value operator[] (slice key) const       {return Dict::get(key);}
         inline Value operator[] (const char *key) const {return Dict::get(key);}

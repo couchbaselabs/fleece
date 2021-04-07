@@ -108,11 +108,11 @@ bool ReadUVarInt32(slice *buf, uint32_t *n) {
 
 
 __hot
-bool WriteUVarInt(slice *buf, uint64_t n) {
-    if (buf->size < kMaxVarintLen64 && buf->size < SizeOfVarInt(n))
+bool WriteUVarInt(slice_stream &out, uint64_t n) {
+    if (out.capacity() < kMaxVarintLen64 && out.capacity() < SizeOfVarInt(n))
         return false;
-    size_t bytesWritten = PutUVarInt((void*)buf->buf, n);
-    buf->moveStart(bytesWritten);
+    size_t bytesWritten = PutUVarInt(out.next(), n);
+    out.advance(bytesWritten);
     return true;
 }
 
@@ -196,11 +196,11 @@ bool WriteUVarInt(slice *buf, uint64_t n) {
         return len + 1;
     }
 
-    bool WriteCollatableUInt(slice *buf NONNULL, uint64_t n) {
-        if (buf->size < kMaxCollatableUIntLen64 && buf->size < SizeOfCollatableUInt(n))
+    bool WriteCollatableUInt(slice_stream &out, uint64_t n) {
+        if (out.capacity() < kMaxCollatableUIntLen64 && out.capacity() < SizeOfCollatableUInt(n))
             return false;
-        size_t bytesWritten = PutCollatableUInt((void*)buf->buf, n);
-        buf->moveStart(bytesWritten);
+        size_t bytesWritten = PutCollatableUInt(out.next(), n);
+        out.advance(bytesWritten);
         return true;
     }
 

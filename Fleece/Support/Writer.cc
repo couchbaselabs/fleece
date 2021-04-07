@@ -189,7 +189,7 @@ namespace fleece {
 
     void Writer::freeChunk(slice chunk) {
         if (chunk.buf != &_initialBuf)
-            chunk.free();
+            ::free((void*)chunk.buf);
     }
 
     void Writer::migrateInitialBuf(const Writer& other) {

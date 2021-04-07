@@ -58,6 +58,7 @@
 		275B3596234BE12800FE9CF0 /* FLSlice.cc in Sources */ = {isa = PBXBuildFile; fileRef = 275B3595234BE12800FE9CF0 /* FLSlice.cc */; };
 		275CED521D3EF7BE001DE46C /* FleeceException.cc in Sources */ = {isa = PBXBuildFile; fileRef = 275CED501D3EF7BE001DE46C /* FleeceException.cc */; };
 		275CED531D3EF7BE001DE46C /* FleeceException.hh in Headers */ = {isa = PBXBuildFile; fileRef = 275CED511D3EF7BE001DE46C /* FleeceException.hh */; };
+		275F0460261E46E9005261C0 /* slice_stream.cc in Sources */ = {isa = PBXBuildFile; fileRef = 275F045F261E46E9005261C0 /* slice_stream.cc */; };
 		2760A4DC25E96DDF00E2ECB2 /* wyhash32.h in Headers */ = {isa = PBXBuildFile; fileRef = 2760A4DB25E96DDF00E2ECB2 /* wyhash32.h */; };
 		276D15461E007D3000543B1B /* JSON5.cc in Sources */ = {isa = PBXBuildFile; fileRef = 276D15441E007D3000543B1B /* JSON5.cc */; };
 		276D15471E007D3000543B1B /* JSON5.hh in Headers */ = {isa = PBXBuildFile; fileRef = 276D15451E007D3000543B1B /* JSON5.hh */; };
@@ -359,6 +360,8 @@
 		275C67DC1BFBA128008AA9E7 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		275CED501D3EF7BE001DE46C /* FleeceException.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FleeceException.cc; sourceTree = "<group>"; };
 		275CED511D3EF7BE001DE46C /* FleeceException.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FleeceException.hh; sourceTree = "<group>"; };
+		275F0458261E447F005261C0 /* slice_stream.hh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = slice_stream.hh; sourceTree = "<group>"; };
+		275F045F261E46E9005261C0 /* slice_stream.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = slice_stream.cc; sourceTree = "<group>"; };
 		275F7F5C210FBFFC00861DE8 /* Deltas.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Deltas.md; sourceTree = "<group>"; };
 		2760A4DB25E96DDF00E2ECB2 /* wyhash32.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = wyhash32.h; sourceTree = "<group>"; };
 		2760A4EF25E96E1000E2ECB2 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -606,6 +609,8 @@
 				271507EA2122381E005FE6E8 /* Fleece.h */,
 				271507E92122381E005FE6E8 /* Fleece+CoreFoundation.h */,
 				271507EE2122381E005FE6E8 /* slice.hh */,
+				275F0458261E447F005261C0 /* slice_stream.hh */,
+				275F045F261E46E9005261C0 /* slice_stream.cc */,
 				271507EB2122381E005FE6E8 /* Fleece.hh */,
 				271507EC2122381E005FE6E8 /* Mutable.hh */,
 				271507EF21223A02005FE6E8 /* Base.h */,
@@ -1368,6 +1373,7 @@
 				27DE2E9D2125FA1700123597 /* slice+CoreFoundation.cc in Sources */,
 				27D965692339595700F4A51C /* NumConversion.cc in Sources */,
 				27DE2EEA2125FC5A00123597 /* Writer.cc in Sources */,
+				275F0460261E46E9005261C0 /* slice_stream.cc in Sources */,
 				27DE2E922125FA1700123597 /* varint.cc in Sources */,
 				27DE2EE82125FB2100123597 /* cdecode.c in Sources */,
 				27DE2EE92125FB2100123597 /* cencode.c in Sources */,
