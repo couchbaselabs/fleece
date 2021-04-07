@@ -563,7 +563,7 @@ namespace fleece { namespace impl {
     // without having to write negative numbers as positions.
 
     bool Encoder::valueIsInBase(const Value *value) const {
-        return _base && value >= _base.buf && value < _base.end();
+        return _base && value >= _base.buf && value < (const void*)_base.end();
     }
 
     // Parameter p is an offset into the current stream, not taking into account the base.

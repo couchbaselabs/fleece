@@ -101,8 +101,8 @@ namespace fleece { namespace impl {
         for (auto &component : _path) {
             if (component.key) {
                 bool quote = false;
-                for (auto cp = (const char*)component.key.buf; cp < component.key.end(); ++cp) {
-                    if (!isalnum(*cp) && *cp != '_') {
+                for (auto c : component.key) {
+                    if (!isalnum(c) && c != '_') {
                         quote = true;
                         break;
                     }

@@ -109,7 +109,10 @@ namespace fleece {
 
         const void* offset(size_t o) const noexcept FLPURE          {return (uint8_t*)buf + o;}
         size_t offsetOf(const void* ptr NONNULL) const noexcept FLPURE {return (uint8_t*)ptr - (uint8_t*)buf;}
-        const void* end() const noexcept FLPURE                     {return offset(size);}
+
+        // These methods allow iterating a slice's bytes with a `for(:)` loop:
+        const uint8_t* begin() const noexcept FLPURE                {return (uint8_t*)buf;}
+        const uint8_t* end() const noexcept FLPURE                  {return begin() + size;}
 
         inline slice upTo(const void* pos NONNULL) const noexcept FLPURE;
         inline slice from(const void* pos NONNULL) const noexcept FLPURE;
