@@ -16,7 +16,7 @@
 // limitations under the License.
 //
 
-#include "slice_stream.hh"
+#include "fleece/slice_stream.hh"
 #include <assert.h>
 
 namespace fleece {

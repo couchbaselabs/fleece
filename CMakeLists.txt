@@ -43,7 +43,8 @@ set(FLEECE_BASE_SRC Fleece/Support/Backtrace.cc
                     Fleece/Support/Writer.cc
                     Fleece/Support/betterassert.cc
                     Fleece/API_Impl/FLSlice.cc
-                    Fleece/Support/slice.cc
+                    Fleece/API_Impl/slice.cc
+                    Fleece/API_Impl/slice_stream.cc
                     Fleece/Support/varint.cc
                     vendor/libb64/cdecode.c
                     vendor/libb64/cencode.c

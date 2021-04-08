@@ -598,6 +598,8 @@
 				278163B31CE69CA800B94E32 /* Fleece.cc */,
 				275B3595234BE12800FE9CF0 /* FLSlice.cc */,
 				270515551D90596000D62D05 /* Fleece+ImplGlue.hh */,
+				270FA2741BF53CEA005DCB13 /* slice.cc */,
+				275F045F261E46E9005261C0 /* slice_stream.cc */,
 			);
 			path = API_Impl;
 			sourceTree = "<group>";
@@ -610,7 +612,6 @@
 				271507E92122381E005FE6E8 /* Fleece+CoreFoundation.h */,
 				271507EE2122381E005FE6E8 /* slice.hh */,
 				275F0458261E447F005261C0 /* slice_stream.hh */,
-				275F045F261E46E9005261C0 /* slice_stream.cc */,
 				271507EB2122381E005FE6E8 /* Fleece.hh */,
 				271507EC2122381E005FE6E8 /* Mutable.hh */,
 				271507EF21223A02005FE6E8 /* Base.h */,
@@ -804,7 +805,6 @@
 				271507ED2122381E005FE6E8 /* PlatformCompat.hh */,
 				274D8254209D1764008BB39F /* RefCounted.cc */,
 				274D8255209D1764008BB39F /* RefCounted.hh */,
-				270FA2741BF53CEA005DCB13 /* slice.cc */,
 				2776AA762093C982004ACE85 /* sliceIO.cc */,
 				2776AA772093C982004ACE85 /* sliceIO.hh */,
 				27C59BA2212F898F003C8492 /* SmallVector.hh */,
