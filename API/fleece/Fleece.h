@@ -337,36 +337,17 @@ extern "C" {
     /** @} */
 
     /** Allocates a string value on the heap. This is rarely needed -- usually you'd just add a string
-        to a mutable Array or Dict directly using \ref FLSlot_SetString. */
+        to a mutable Array or Dict directly using one of their "...SetString" or "...AppendString"
+        methods. */
     FLValue FLValue_NewString(FLString) FLAPI;
 
     /** Allocates a data/blob value on the heap. This is rarely needed -- usually you'd just add data
-        to a mutable Array or Dict directly using \ref FLSlot_SetData. */
+        to a mutable Array or Dict directly using one of their "...SetData or "...AppendData"
+        methods. */
     FLValue FLValue_NewData(FLSlice) FLAPI;
 
     /** A constant null value (not a NULL pointer!) */
     extern const FLValue kFLNullValue;
-
-
-    //////// VALUE SLOT
-
-
-    /** @} */
-    /** \defgroup Slots   Value Slots
-        @{
-         An `FLSlot` is a temporary reference to an element of a mutable Array/Dict.
-         Its only purpose is to let you store a value into it, using the functions below.
-     */
-
-    void FLSlot_SetNull(FLSlot FLNONNULL) FLAPI;             ///< Stores a JSON null into a slot.
-    void FLSlot_SetBool(FLSlot FLNONNULL, bool) FLAPI;       ///< Stores a boolean into a slot.
-    void FLSlot_SetInt(FLSlot FLNONNULL, int64_t) FLAPI;     ///< Stores an integer into a slot.
-    void FLSlot_SetUInt(FLSlot FLNONNULL, uint64_t) FLAPI;   ///< Stores an unsigned integer into a slot.
-    void FLSlot_SetFloat(FLSlot FLNONNULL, float) FLAPI;     ///< Stores a float into a slot.
-    void FLSlot_SetDouble(FLSlot FLNONNULL, double) FLAPI;   ///< Stores a double into a slot.
-    void FLSlot_SetString(FLSlot FLNONNULL, FLString) FLAPI; ///< Stores a string into a slot.
-    void FLSlot_SetData(FLSlot FLNONNULL, FLSlice) FLAPI;    ///< Stores a data blob into a slot.
-    void FLSlot_SetValue(FLSlot FLNONNULL, FLValue) FLAPI;   ///< Stores an FLValue into a slot.
 
 
     //////// ARRAY
@@ -492,14 +473,6 @@ while (NULL != (value = FLArrayIterator_GetValue(&iter))) {
     /** Sets or clears the mutable Array's "changed" flag. */
     void FLMutableArray_SetChanged(FLMutableArray, bool) FLAPI;
 
-    /** Lets you store a value into a MutableArray, by returning a \ref FLSlot that you can call
-        a function like \ref FLSlot_SetInt on. */
-    FLSlot FLMutableArray_Set(FLMutableArray FLNONNULL, uint32_t index) FLAPI;
-
-    /** Appends a null value to a MutableArray and returns a \ref FLSlot that you can call
-        to store something else in the new value. */
-    FLSlot FLMutableArray_Append(FLMutableArray FLNONNULL) FLAPI;
-
     /** Inserts a contiguous range of JSON `null` values into the array.
         @param array  The array to operate on.
         @param firstIndex  The zero-based index of the first value to be inserted.
@@ -530,6 +503,50 @@ while (NULL != (value = FLArrayIterator_GetValue(&iter))) {
         - If the value is an immutable array, this function makes a mutable copy, assigns the
           copy as the property value, and returns the copy. */
     FLMutableDict FLMutableArray_GetMutableDict(FLMutableArray, uint32_t index) FLAPI;
+
+
+    /// Stores a JSON null value into an array.
+    static inline void FLMutableArray_SetNull(FLMutableArray NONNULL, uint32_t index);
+    /// Stores a boolean value into an array.
+    static inline void FLMutableArray_SetBool(FLMutableArray NONNULL, uint32_t index, bool);
+    /// Stores an integer into an array.
+    static inline void FLMutableArray_SetInt(FLMutableArray NONNULL, uint32_t index, int64_t);
+    /// Stores an unsigned integer into an array.
+    /// \note: The only time this needs to be called, instead of \ref FLMutableArray_SetInt,
+    ///        is if the value is greater than or equal to 2^63 and won't fit in an `int64_t`.
+    static inline void FLMutableArray_SetUInt(FLMutableArray NONNULL, uint32_t index, uint64_t);
+    /// Stores a 32-bit floating-point number into an array.
+    static inline void FLMutableArray_SetFloat(FLMutableArray NONNULL, uint32_t index, float);
+    /// Stores a 64-bit floating point number into an array.
+    static inline void FLMutableArray_SetDouble(FLMutableArray NONNULL, uint32_t index, double);
+    /// Stores a UTF-8-encoded string into an array.
+    static inline void FLMutableArray_SetString(FLMutableArray NONNULL, uint32_t index, FLString);
+    /// Stores a binary data blob into an array.
+    static inline void FLMutableArray_SetData(FLMutableArray NONNULL, uint32_t index, FLSlice);
+    /// Stores a Fleece value into an array.
+    static inline void FLMutableArray_SetValue(FLMutableArray NONNULL, uint32_t index, FLValue);
+
+    /// Appends a JSON null value to an array.
+    static inline void FLMutableArray_AppendNull(FLMutableArray NONNULL);
+    /// Appends a boolean value to an array.
+    static inline void FLMutableArray_AppendBool(FLMutableArray NONNULL, bool);
+    /// Appends an integer to an array.
+    static inline void FLMutableArray_AppendInt(FLMutableArray NONNULL, int64_t);
+    /// Appends an unsigned integer to an array.
+    /// \note: The only time this needs to be called, instead of \ref FLMutableArray_AppendInt,
+    ///        is if the value is greater than or equal to 2^63 and won't fit in an `int64_t`.
+    static inline void FLMutableArray_AppendUInt(FLMutableArray NONNULL, uint64_t);
+    /// Appends a 32-bit floating-point number to an array.
+    static inline void FLMutableArray_AppendFloat(FLMutableArray NONNULL, float);
+    /// Appends a 64-bit floating point number to an array.
+    static inline void FLMutableArray_AppendDouble(FLMutableArray NONNULL, double);
+    /// Appends a UTF-8-encoded string to an array.
+    static inline void FLMutableArray_AppendString(FLMutableArray NONNULL, FLString);
+    /// Appends a binary data blob to an array.
+    static inline void FLMutableArray_AppendData(FLMutableArray NONNULL, FLSlice);
+    /// Appends a Fleece value to an array.
+    static inline void FLMutableArray_AppendValue(FLMutableArray NONNULL, FLValue);
+
 
     /** @} */
 
@@ -683,10 +700,6 @@ while (NULL != (value = FLDictIterator_GetValue(&iter))) {
     /** Sets or clears the mutable Dict's "changed" flag. */
     void FLMutableDict_SetChanged(FLMutableDict, bool) FLAPI;
 
-    /** Returns the Slot storing the key's value, adding a new one if needed (with a null value.)
-        To set the value itself, call one of the FLSlot functions, e.g. \ref FLSlot_SetInt. */
-    FLSlot FLMutableDict_Set(FLMutableDict FL_NONNULL, FLString key) FLAPI;
-
     /** Removes the value for a key. */
     void FLMutableDict_Remove(FLMutableDict, FLString key) FLAPI;
 
@@ -706,6 +719,29 @@ while (NULL != (value = FLDictIterator_GetValue(&iter))) {
         - If the value is an immutable dict, this function makes a mutable copy, assigns the
           copy as the property value, and returns the copy. */
     FLMutableDict FLMutableDict_GetMutableDict(FLMutableDict, FLString key) FLAPI;
+
+
+    /// Stores a JSON null value into a mutable dictionary.
+    static inline void FLMutableDict_SetNull(FLMutableDict NONNULL, FLString key);
+    /// Stores a boolean value into a mutable dictionary.
+    static inline void FLMutableDict_SetBool(FLMutableDict NONNULL, FLString key, bool);
+    /// Stores an integer into a mutable dictionary.
+    static inline void FLMutableDict_SetInt(FLMutableDict NONNULL, FLString key, int64_t);
+    /// Stores an unsigned integer into a mutable dictionary.
+    /// \note: The only time this needs to be called, instead of \ref FLMutableDict_SetInt,
+    ///        is if the value is greater than or equal to 2^63 and won't fit in an `int64_t`.
+    static inline void FLMutableDict_SetUInt(FLMutableDict NONNULL, FLString key, uint64_t);
+    /// Stores a 32-bit floating-point number into a mutable dictionary.
+    static inline void FLMutableDict_SetFloat(FLMutableDict NONNULL, FLString key, float);
+    /// Stores a 64-bit floating point number into a mutable dictionary.
+    static inline void FLMutableDict_SetDouble(FLMutableDict NONNULL, FLString key, double);
+    /// Stores a UTF-8-encoded string into a mutable dictionary.
+    static inline void FLMutableDict_SetString(FLMutableDict NONNULL, FLString key, FLString);
+    /// Stores a binary data blob into a mutable dictionary.
+    static inline void FLMutableDict_SetData(FLMutableDict NONNULL, FLString key, FLSlice);
+    /// Stores a Fleece value into a mutable dictionary.
+    static inline void FLMutableDict_SetValue(FLMutableDict NONNULL, FLString key, FLValue);
+
 
     /** @} */
 
@@ -1123,6 +1159,7 @@ while (NULL != (value = FLDictIterator_GetValue(&iter))) {
 
     /** Ends encoding; if there has been no error, it returns the encoded data, else null.
         This does not free the FLEncoder; call FLEncoder_Free (or FLEncoder_Reset) next. */
+    MUST_USE_RESULT
     FLSliceResult FLEncoder_Finish(FLEncoder e, FLError *outError) FLAPI;
 
     /** @} */
@@ -1195,7 +1232,145 @@ while (NULL != (value = FLDictIterator_GetValue(&iter))) {
                                    FLSlice jsonDelta,
                                    FLEncoder encoder) FLAPI;
 
-    
+
+    //////// VALUE SLOTS
+
+
+    /** @} */
+    /** \defgroup Slots   Value Slots
+        @{
+         An \ref FLSlot is a temporary reference to an element of a mutable Array/Dict;
+         its only purpose is to let you store a value into it, using the `FLSlot_...` functions.
+
+         Since there are three ways to store a value into a collection (array set, array append,
+         dict set) and nine types of values that can be stored, that makes 27 setter functions.
+         For efficiency, these are declared as inlines that call one of three functions to acquire
+         a slot, and one of nine functions to store a value into it.
+
+         It's usually more convenient to use the typed functions like \ref FLMutableArray_SetInt,
+         but you might drop down to the lower level ones if you're creating an adapter between
+         Fleece and a different data model, such as Apple's Foundation classes. */
+
+    /** Returns an \ref FLSlot that refers to the given index of the given array.
+        You store a value to it by calling one of the nine `FLSlot_Set...` functions.
+        \warning You should immediately store a value into the `FLSlot`. Do not keep it around;
+                 any changes to the array invalidate it.*/
+    MUST_USE_RESULT
+    FLSlot FLMutableArray_Set(FLMutableArray NONNULL, uint32_t index) FLAPI;
+
+    /** Appends a null value to the array and returns an \ref FLSLot that refers to that position.
+        You store a value to it by calling one of the nine `FLSlot_Set...` functions.
+        \warning You should immediately store a value into the `FLSlot`. Do not keep it around;
+                 any changes to the array invalidate it.*/
+    MUST_USE_RESULT
+    FLSlot FLMutableArray_Append(FLMutableArray NONNULL) FLAPI;
+
+    /** Returns an \ref FLSlot that refers to the given key/value pair of the given dictionary.
+        You store a value to it by calling one of the nine `FLSlot_Set...` functions.
+        \warning You should immediately store a value into the `FLSlot`. Do not keep it around;
+                 any changes to the dictionary invalidate it.*/
+    MUST_USE_RESULT
+    FLSlot FLMutableDict_Set(FLMutableDict FL_NONNULL, FLString key) FLAPI;
+
+
+    void FLSlot_SetNull(FLSlot NONNULL) FLAPI;             ///< Stores a JSON null into a slot.
+    void FLSlot_SetBool(FLSlot NONNULL, bool) FLAPI;       ///< Stores a boolean into a slot.
+    void FLSlot_SetInt(FLSlot NONNULL, int64_t) FLAPI;     ///< Stores an integer into a slot.
+    void FLSlot_SetUInt(FLSlot NONNULL, uint64_t) FLAPI;   ///< Stores an unsigned int into a slot.
+    void FLSlot_SetFloat(FLSlot NONNULL, float) FLAPI;     ///< Stores a `float` into a slot.
+    void FLSlot_SetDouble(FLSlot NONNULL, double) FLAPI;   ///< Stores a `double` into a slot.
+    void FLSlot_SetString(FLSlot NONNULL, FLString) FLAPI; ///< Stores a UTF-8 string into a slot.
+    void FLSlot_SetData(FLSlot NONNULL, FLSlice) FLAPI;    ///< Stores a data blob into a slot.
+    void FLSlot_SetValue(FLSlot NONNULL, FLValue) FLAPI;   ///< Stores an FLValue into a slot.
+
+
+    // implementations of the inline methods declared earlier:
+
+    static inline void FLMutableArray_SetNull(FLMutableArray a, uint32_t index) {
+        FLSlot_SetNull(FLMutableArray_Set(a, index));
+    }
+    static inline void FLMutableArray_SetBool(FLMutableArray a, uint32_t index, bool val) {
+        FLSlot_SetBool(FLMutableArray_Set(a, index), val);
+    }
+    static inline void FLMutableArray_SetInt(FLMutableArray a, uint32_t index, int64_t val) {
+        FLSlot_SetInt(FLMutableArray_Set(a, index), val);
+    }
+    static inline void FLMutableArray_SetUInt(FLMutableArray a, uint32_t index, uint64_t val) {
+        FLSlot_SetUInt(FLMutableArray_Set(a, index), val);
+    }
+    static inline void FLMutableArray_SetFloat(FLMutableArray a, uint32_t index, float val) {
+        FLSlot_SetFloat(FLMutableArray_Set(a, index), val);
+    }
+    static inline void FLMutableArray_SetDouble(FLMutableArray a, uint32_t index, double val) {
+        FLSlot_SetDouble(FLMutableArray_Set(a, index), val);
+    }
+    static inline void FLMutableArray_SetString(FLMutableArray a, uint32_t index, FLString val) {
+        FLSlot_SetString(FLMutableArray_Set(a, index), val);
+    }
+    static inline void FLMutableArray_SetData(FLMutableArray a, uint32_t index, FLSlice val) {
+        FLSlot_SetData(FLMutableArray_Set(a, index), val);
+    }
+    static inline void FLMutableArray_SetValue(FLMutableArray a, uint32_t index, FLValue val) {
+        FLSlot_SetValue(FLMutableArray_Set(a, index), val);
+    }
+
+    static inline void FLMutableArray_AppendNull(FLMutableArray a) {
+        FLSlot_SetNull(FLMutableArray_Append(a));
+    }
+    static inline void FLMutableArray_AppendBool(FLMutableArray a, bool val) {
+        FLSlot_SetBool(FLMutableArray_Append(a), val);
+    }
+    static inline void FLMutableArray_AppendInt(FLMutableArray a, int64_t val) {
+        FLSlot_SetInt(FLMutableArray_Append(a), val);
+    }
+    static inline void FLMutableArray_AppendUInt(FLMutableArray a, uint64_t val) {
+        FLSlot_SetUInt(FLMutableArray_Append(a), val);
+    }
+    static inline void FLMutableArray_AppendFloat(FLMutableArray a, float val) {
+        FLSlot_SetFloat(FLMutableArray_Append(a), val);
+    }
+    static inline void FLMutableArray_AppendDouble(FLMutableArray a, double val) {
+        FLSlot_SetDouble(FLMutableArray_Append(a), val);
+    }
+    static inline void FLMutableArray_AppendString(FLMutableArray a, FLString val) {
+        FLSlot_SetString(FLMutableArray_Append(a), val);
+    }
+    static inline void FLMutableArray_AppendData(FLMutableArray a, FLSlice val) {
+        FLSlot_SetData(FLMutableArray_Append(a), val);
+    }
+    static inline void FLMutableArray_AppendValue(FLMutableArray a, FLValue val) {
+        FLSlot_SetValue(FLMutableArray_Append(a), val);
+    }
+
+    static inline void FLMutableDict_SetNull(FLMutableDict d, FLString key) {
+        FLSlot_SetNull(FLMutableDict_Set(d, key));
+    }
+    static inline void FLMutableDict_SetBool(FLMutableDict d, FLString key, bool val) {
+        FLSlot_SetBool(FLMutableDict_Set(d, key), val);
+    }
+    static inline void FLMutableDict_SetInt(FLMutableDict d, FLString key, int64_t val) {
+        FLSlot_SetInt(FLMutableDict_Set(d, key), val);
+    }
+    static inline void FLMutableDict_SetUInt(FLMutableDict d, FLString key, uint64_t val) {
+        FLSlot_SetUInt(FLMutableDict_Set(d, key), val);
+    }
+    static inline void FLMutableDict_SetFloat(FLMutableDict d, FLString key, float val) {
+        FLSlot_SetFloat(FLMutableDict_Set(d, key), val);
+    }
+    static inline void FLMutableDict_SetDouble(FLMutableDict d, FLString key, double val) {
+        FLSlot_SetDouble(FLMutableDict_Set(d, key), val);
+    }
+    static inline void FLMutableDict_SetString(FLMutableDict d, FLString key, FLString val) {
+        FLSlot_SetString(FLMutableDict_Set(d, key), val);
+    }
+    static inline void FLMutableDict_SetData(FLMutableDict d, FLString key, FLSlice val) {
+        FLSlot_SetData(FLMutableDict_Set(d, key), val);
+    }
+    static inline void FLMutableDict_SetValue(FLMutableDict d, FLString key, FLValue val) {
+        FLSlot_SetValue(FLMutableDict_Set(d, key), val);
+    }
+
+
     /** @} */
 
 #ifdef __cplusplus
