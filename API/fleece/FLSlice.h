@@ -153,6 +153,12 @@ static inline void FLSliceResult_Release(FLSliceResult s) FLAPI {
 }
 
 
+/** Writes zeroes to `size` bytes of memory starting at `dst`.
+    Unlike a call to `memset`, these writes cannot be optimized away by the compiler.
+    This is useful for securely removing traces of passwords or encryption keys. */
+void FL_WipeMemory(void *dst, size_t size) FLAPI;
+
+
 /** @} */
 
 #ifdef __cplusplus

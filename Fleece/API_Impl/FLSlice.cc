@@ -16,6 +16,8 @@
 // limitations under the License.
 //
 
+#define __STDC_WANT_LIB_EXT1__ 1    // For `memset_s`
+
 #include "fleece/FLSlice.h"
 #include <algorithm>
 #include <atomic>
@@ -29,6 +31,10 @@ namespace fleece::wyhash {
 namespace fleece::wyhash32 {
     #include "wyhash32.h"
 }
+
+#ifdef _MSC_VER
+#include <Windows.h>                // for SecureZeroMemory()
+#endif
 
 
 bool FLSlice_Equal(FLSlice a, FLSlice b) noexcept {
@@ -182,3 +188,18 @@ void _FLBuf_Release(const void *buf) noexcept {
 }
 
 
+void FL_WipeMemory(void *buf, size_t size) noexcept {
+    if (size > 0) {
+#if defined(_MSC_VER)
+        SecureZeroMemory(buf, size);
+#elif defined(__STDC_LIB_EXT1__) || defined(__APPLE__)
+        // memset_s is an optional feature of C11, and available in Apple's C library.
+        memset_s(buf, size, 0, size);
+#else
+        // Generic implementation (`volatile` ensures the writes will not be optimized away.)
+        volatile unsigned char* p = (unsigned char *)buf;
+        for (auto s = size; s > 0; --s)
+            *p++ = 0;
+#endif
+    }
+}

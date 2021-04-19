@@ -21,6 +21,7 @@
 #include <math.h>
 #include <iostream>
 #include <algorithm>
+#include "slice_stream.hh"
 #include "PlatformCompat.hh"
 #include "betterassert.hh"
 
@@ -153,12 +154,12 @@ namespace fleece {
     { }
     
     static int32_t readVarInt(const uint8_t* &tree) {
-        slice buf(tree, kMaxVarintLen32);
-        uint32_t n;
-        if (!ReadUVarInt32(&buf, &n))
+        slice_istream buf(tree, kMaxVarintLen32);
+        std::optional<uint32_t> n = buf.readUVarInt();
+        if (!n)
             return -1;
         tree = (const uint8_t*)buf.buf;
-        return n;
+        return *n;
     }
 
     static slice readKey(const uint8_t* &tree) {

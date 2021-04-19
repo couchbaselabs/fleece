@@ -33,7 +33,8 @@ add_library(FleeceStatic  STATIC  ${FLEECE_SRC})
 
 # "FleeceBase" static lib for clients that just need support stuff like slice, varint, RefCounted...
 set_base_platform_files(RESULT FLEECE_BASE_PLATFORM_SRC)
-set(FLEECE_BASE_SRC Fleece/Support/Backtrace.cc
+set(FLEECE_BASE_SRC Fleece/API_Impl/FLSlice.cc
+                    Fleece/Support/Backtrace.cc
                     Fleece/Support/Base64.cc
                     Fleece/Support/FleeceException.cc
                     Fleece/Support/InstanceCounted.cc
@@ -42,9 +43,7 @@ set(FLEECE_BASE_SRC Fleece/Support/Backtrace.cc
                     Fleece/Support/RefCounted.cc
                     Fleece/Support/Writer.cc
                     Fleece/Support/betterassert.cc
-                    Fleece/API_Impl/FLSlice.cc
-                    Fleece/API_Impl/slice.cc
-                    Fleece/API_Impl/slice_stream.cc
+                    Fleece/Support/slice_stream.cc
                     Fleece/Support/varint.cc
                     vendor/libb64/cdecode.c
                     vendor/libb64/cencode.c

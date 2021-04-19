@@ -20,6 +20,7 @@
 #include "SharedKeys.hh"
 #include "FleeceException.hh"
 #include "PlatformCompat.hh"
+#include "slice_stream.hh"
 #include <iostream>
 #include <sstream>
 
@@ -141,14 +142,15 @@ namespace fleece { namespace impl {
 
     /*static*/ const Value* Path::evalJSONPointer(slice specifier, const Value *root)
     {
+        slice_istream in(specifier);
         auto current = root;
-        throwIf(specifier.readByte() != '/', PathSyntaxError, "JSONPointer does not start with '/'");
-        while (specifier.size > 0) {
+        throwIf(in.readByte() != '/', PathSyntaxError, "JSONPointer does not start with '/'");
+        while (!in.eof()) {
             if (!current)
                 return nullptr;
 
-            auto slash = specifier.findByteOrEnd('/');
-            slice param(specifier.buf, slash);
+            auto slash = in.findByteOrEnd('/');
+            slice_istream param(in.buf, slash);
 
             switch(current->type()) {
                 case kArray: {
@@ -168,9 +170,9 @@ namespace fleece { namespace impl {
                     break;
             }
 
-            if (slash == specifier.end())
+            if (slash == in.end())
                 break;
-            specifier.setStart(slash+1);
+            in.setStart(slash+1);
         }
         return current;
     }
@@ -180,7 +182,8 @@ namespace fleece { namespace impl {
 
 
     // Parses a path expression, calling the callback for each property or array index.
-    void Path::forEachComponent(slice in, bool atStart, eachComponentCallback callback) {
+    void Path::forEachComponent(slice specifier, bool atStart, eachComponentCallback callback) {
+        slice_istream in(specifier);
         throwIf(in.size == 0, PathSyntaxError, "Empty path");
         throwIf(in[in.size-1] == '\\', PathSyntaxError, "'\\' at end of string");
 
@@ -188,18 +191,18 @@ namespace fleece { namespace impl {
         if (token == '$') {
             // Starts with "$." or "$["
             throwIf(!atStart, PathSyntaxError, "Illegal $ in path");
-            in.moveStart(1);
+            in.skip(1);
             if (in.size == 0)
                 return;                 // Just "$" means the root
             token = in.readByte();
             throwIf(token != '.' && token != '[', PathSyntaxError, "Invalid path delimiter after $");
         } else if (token == '[' || token == '.') {
             // Starts with "[" or "."
-            in.moveStart(1);
+            in.skip(1);
         } else if (token == '\\') {
             // First character of path is escaped (probably a '$' or '.' or '[')
             if (in[1] == '$')
-                in.moveStart(1);
+                in.skip(1);
             token = '.';
         } else {
             // Else starts with a property name
@@ -248,7 +251,7 @@ namespace fleece { namespace impl {
                     FleeceException::_throw(PathSyntaxError, "Missing ']'");
                 param = slice(in.buf, next++);
                 // Parse array index:
-                slice n = param;
+                slice_istream n = param;
                 int64_t i = n.readSignedDecimal();
                 throwIf(param.size == 0 || n.size > 0 || i > INT32_MAX || i < INT32_MIN,
                         PathSyntaxError, "Invalid array index");

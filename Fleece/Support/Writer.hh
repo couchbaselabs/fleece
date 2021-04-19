@@ -183,7 +183,7 @@ namespace fleece {
            which is important for the Fleece Encoder class.
         */
 
-        // TODO: Make _available a slice_stream
+        // TODO: Make _available a slice_ostream
 
         slice _available;               // Available range of current chunk
         smallVector<slice, 4> _chunks;  // Chunks in consecutive order. Last is written to.

@@ -45,6 +45,7 @@
 		2739971725CDBD8E000C1C1B /* SmallVectorBase.hh in Headers */ = {isa = PBXBuildFile; fileRef = 2739971625CDBD8E000C1C1B /* SmallVectorBase.hh */; };
 		273CD2D825E874CD00B93C59 /* Base64.hh in Headers */ = {isa = PBXBuildFile; fileRef = 273CD2D625E874CD00B93C59 /* Base64.hh */; };
 		273CD2D925E874CD00B93C59 /* Base64.cc in Sources */ = {isa = PBXBuildFile; fileRef = 273CD2D725E874CD00B93C59 /* Base64.cc */; };
+		274281A4262F7CBF00862700 /* slice+ObjC.mm in Sources */ = {isa = PBXBuildFile; fileRef = 274281A3262F7CBF00862700 /* slice+ObjC.mm */; };
 		274D8244209A3A77008BB39F /* HeapDict.cc in Sources */ = {isa = PBXBuildFile; fileRef = 274D8242209A3A77008BB39F /* HeapDict.cc */; };
 		274D8245209A3A77008BB39F /* HeapDict.hh in Headers */ = {isa = PBXBuildFile; fileRef = 274D8243209A3A77008BB39F /* HeapDict.hh */; };
 		274D8248209A5906008BB39F /* ValueSlot.cc in Sources */ = {isa = PBXBuildFile; fileRef = 274D8246209A5906008BB39F /* ValueSlot.cc */; };
@@ -149,7 +150,6 @@
 		27DE2E922125FA1700123597 /* varint.cc in Sources */ = {isa = PBXBuildFile; fileRef = 270FA2761BF53CEA005DCB13 /* varint.cc */; };
 		27DE2E962125FA1700123597 /* RefCounted.cc in Sources */ = {isa = PBXBuildFile; fileRef = 274D8254209D1764008BB39F /* RefCounted.cc */; };
 		27DE2E9D2125FA1700123597 /* slice+CoreFoundation.cc in Sources */ = {isa = PBXBuildFile; fileRef = 272E5A601BF91F6C00848580 /* slice+CoreFoundation.cc */; };
-		27DE2E9E2125FA1700123597 /* slice.cc in Sources */ = {isa = PBXBuildFile; fileRef = 270FA2741BF53CEA005DCB13 /* slice.cc */; };
 		27DE2EB22125FA1700123597 /* JSON5.hh in Headers */ = {isa = PBXBuildFile; fileRef = 276D15451E007D3000543B1B /* JSON5.hh */; };
 		27DE2EB32125FA1700123597 /* RefCounted.hh in Headers */ = {isa = PBXBuildFile; fileRef = 274D8255209D1764008BB39F /* RefCounted.hh */; };
 		27DE2EB42125FA1700123597 /* JSONDelta.hh in Headers */ = {isa = PBXBuildFile; fileRef = 27AEFAC121090FF400106ED8 /* JSONDelta.hh */; };
@@ -294,7 +294,6 @@
 		270FA2711BF53CEA005DCB13 /* Writer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Writer.cc; sourceTree = "<group>"; };
 		270FA2721BF53CEA005DCB13 /* Writer.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Writer.hh; sourceTree = "<group>"; };
 		270FA2731BF53CEA005DCB13 /* Endian.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Endian.hh; sourceTree = "<group>"; };
-		270FA2741BF53CEA005DCB13 /* slice.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = slice.cc; sourceTree = "<group>"; };
 		270FA2761BF53CEA005DCB13 /* varint.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = varint.cc; sourceTree = "<group>"; };
 		270FA2771BF53CEA005DCB13 /* varint.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = varint.hh; sourceTree = "<group>"; };
 		271507E92122381E005FE6E8 /* Fleece+CoreFoundation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Fleece+CoreFoundation.h"; sourceTree = "<group>"; };
@@ -337,6 +336,7 @@
 		2739971625CDBD8E000C1C1B /* SmallVectorBase.hh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = SmallVectorBase.hh; sourceTree = "<group>"; };
 		273CD2D625E874CD00B93C59 /* Base64.hh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Base64.hh; sourceTree = "<group>"; };
 		273CD2D725E874CD00B93C59 /* Base64.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Base64.cc; sourceTree = "<group>"; };
+		274281A3262F7CBF00862700 /* slice+ObjC.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = "slice+ObjC.mm"; sourceTree = "<group>"; };
 		2744B36424197176005A194D /* Function.hh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Function.hh; sourceTree = "<group>"; };
 		2746DD3B1D931BE9000517BC /* Benchmark.hh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Benchmark.hh; sourceTree = "<group>"; };
 		2747D9841CFB9BC300C48211 /* 1person.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = 1person.json; sourceTree = "<group>"; };
@@ -598,8 +598,6 @@
 				278163B31CE69CA800B94E32 /* Fleece.cc */,
 				275B3595234BE12800FE9CF0 /* FLSlice.cc */,
 				270515551D90596000D62D05 /* Fleece+ImplGlue.hh */,
-				270FA2741BF53CEA005DCB13 /* slice.cc */,
-				275F045F261E46E9005261C0 /* slice_stream.cc */,
 			);
 			path = API_Impl;
 			sourceTree = "<group>";
@@ -611,7 +609,6 @@
 				271507EA2122381E005FE6E8 /* Fleece.h */,
 				271507E92122381E005FE6E8 /* Fleece+CoreFoundation.h */,
 				271507EE2122381E005FE6E8 /* slice.hh */,
-				275F0458261E447F005261C0 /* slice_stream.hh */,
 				271507EB2122381E005FE6E8 /* Fleece.hh */,
 				271507EC2122381E005FE6E8 /* Mutable.hh */,
 				271507EF21223A02005FE6E8 /* Base.h */,
@@ -805,6 +802,8 @@
 				271507ED2122381E005FE6E8 /* PlatformCompat.hh */,
 				274D8254209D1764008BB39F /* RefCounted.cc */,
 				274D8255209D1764008BB39F /* RefCounted.hh */,
+				275F0458261E447F005261C0 /* slice_stream.hh */,
+				275F045F261E46E9005261C0 /* slice_stream.cc */,
 				2776AA762093C982004ACE85 /* sliceIO.cc */,
 				2776AA772093C982004ACE85 /* sliceIO.hh */,
 				27C59BA2212F898F003C8492 /* SmallVector.hh */,
@@ -904,10 +903,11 @@
 		27E3DD2A1DB1C17900F2872D /* ObjC */ = {
 			isa = PBXGroup;
 			children = (
-				270FA26D1BF53CEA005DCB13 /* Value+ObjC.mm */,
 				270FA2701BF53CEA005DCB13 /* Encoder+ObjC.mm */,
-				272E5A601BF91F6C00848580 /* slice+CoreFoundation.cc */,
 				270515531D9058F200D62D05 /* Fleece+CoreFoundation.mm */,
+				272E5A601BF91F6C00848580 /* slice+CoreFoundation.cc */,
+				274281A3262F7CBF00862700 /* slice+ObjC.mm */,
+				270FA26D1BF53CEA005DCB13 /* Value+ObjC.mm */,
 			);
 			name = ObjC;
 			path = ../ObjC;
@@ -1367,8 +1367,8 @@
 				275B3596234BE12800FE9CF0 /* FLSlice.cc in Sources */,
 				27DE2E962125FA1700123597 /* RefCounted.cc in Sources */,
 				2700BBA3218B949900797537 /* Backtrace.cc in Sources */,
+				274281A4262F7CBF00862700 /* slice+ObjC.mm in Sources */,
 				2779BA1124CB4A4900BCEA8F /* ConcurrentMap.cc in Sources */,
-				27DE2E9E2125FA1700123597 /* slice.cc in Sources */,
 				27DFAE13219F83AB00DF57EB /* InstanceCounted.cc in Sources */,
 				27DE2E9D2125FA1700123597 /* slice+CoreFoundation.cc in Sources */,
 				27D965692339595700F4A51C /* NumConversion.cc in Sources */,

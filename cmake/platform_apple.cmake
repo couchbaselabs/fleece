@@ -21,6 +21,7 @@ function(set_source_files)
         ObjC/Encoder+ObjC.mm
         ObjC/Fleece+CoreFoundation.mm
         ObjC/slice+CoreFoundation.cc
+        ObjC/slice+ObjC.mm
         ObjC/Value+ObjC.mm
         PARENT_SCOPE
     )
@@ -36,6 +37,7 @@ function(set_base_platform_files)
       set(
          ${APPLE_SSS_RESULT}
          ObjC/slice+CoreFoundation.cc
+         ObjC/slice+ObjC.mm
          PARENT_SCOPE
      )
 endfunction()
@@ -49,8 +51,8 @@ function(set_test_source_files)
 
     set_test_source_files_base(RESULT BASE_SRC_FILES)
     set(
-        ${WIN_SSS_RESULT} 
-        ${BASE_SRC_FILES} 
+        ${WIN_SSS_RESULT}
+        ${BASE_SRC_FILES}
         Tests/ObjCTests.mm
         Fleece/Integration/ObjC/MTests.mm
         PARENT_SCOPE
@@ -86,5 +88,5 @@ function(setup_build)
 endfunction()
 
 function(setup_test_build)
-    
+
 endfunction()

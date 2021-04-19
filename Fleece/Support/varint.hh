@@ -17,14 +17,11 @@
 //
 
 #pragma once
-
-#include <stddef.h>
 #include "fleece/slice.hh"
-#include "fleece/slice_stream.hh"
-#include "fleece/Base.h"
 
 namespace fleece {
 
+    
 #pragma mark - UNSIGNED VARINTS:
 
 // Based on varint implementation from the Go language (src/pkg/encoding/binary/varint.go)
@@ -53,6 +50,7 @@ size_t PutUVarInt(void *buf NONNULL, uint64_t n);
 size_t _GetUVarInt(slice buf, uint64_t *n NONNULL);   // do not call directly
 size_t _GetUVarInt32(slice buf, uint32_t *n NONNULL); // do not call directly
 
+    
 /** Decodes a varint from the bytes in buf, storing it into *n.
     Returns the number of bytes read, or 0 if the data is invalid (buffer too short or number
     too long.) */
@@ -67,6 +65,7 @@ static inline size_t GetUVarInt(slice buf, uint64_t *n NONNULL) {
     }
     return _GetUVarInt(buf, n);
 }
+
 
 /** Decodes a varint from the bytes in buf, storing it into *n.
     Returns the number of bytes read, or 0 if the data is invalid (buffer too short or number
@@ -83,16 +82,6 @@ static inline size_t GetUVarInt32(slice buf, uint32_t *n NONNULL) {
     return _GetUVarInt32(buf, n);
 }
 
-
-
-/** Decodes a varint from buf, and advances buf to the remaining space after it.
-    Returns false if the end of the buffer is reached or there is a parse error. */
-bool ReadUVarInt(slice *buf NONNULL, uint64_t *n NONNULL);
-bool ReadUVarInt32(slice *buf NONNULL, uint32_t *n NONNULL);
-
-/** Encodes a varint into buf, and advances buf to the remaining space after it.
-    Returns false if there isn't enough room. */
-bool WriteUVarInt(slice_stream &out, uint64_t n);
 
 /** Skips a pointer past a varint without decoding it. */
 __hot
@@ -132,10 +121,6 @@ size_t SizeOfCollatableUInt(uint64_t n);
 
 /** Encodes n as a collatable int, writing it to buf. Returns the number of bytes written. */
 size_t PutCollatableUInt(void *buf, uint64_t n);
-
-/** Encodes a collatable int into buf, and advances buf to the remaining space after it.
-    Returns false if there isn't enough room. */
-bool WriteCollatableUInt(slice_stream &out, uint64_t n);
 
 /** Decodes a collatable int from the bytes in buf, storing it into *n.
     Returns the number of bytes read, or 0 if the data is invalid (buffer too short or number
