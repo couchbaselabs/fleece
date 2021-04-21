@@ -208,7 +208,7 @@ namespace fleece { namespace impl {
             
             internal::tags tag;
             bool wide;
-            smallVector<slice, kInitialCollectionCapacity> keys;
+            smallVector<FLSlice, kInitialCollectionCapacity> keys;
         };
 
         void init();
@@ -227,7 +227,7 @@ namespace fleece { namespace impl {
         const void* writeData(internal::tags, slice s);
         const void* _writeString(slice);
         void addingKey();
-        void addedKey(slice str);
+        void addedKey(FLSlice str);
         void sortDict(valueArray &items);
         void checkPointerWidths(valueArray *items NONNULL, size_t writePos);
         void fixPointers(valueArray *items NONNULL);

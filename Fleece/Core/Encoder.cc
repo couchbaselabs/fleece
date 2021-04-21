@@ -672,7 +672,7 @@ namespace fleece { namespace impl {
             writeKey(key.asString());
     }
 
-    void Encoder::addedKey(slice str) {
+    void Encoder::addedKey(FLSlice str) {
         // Note: str will be nullslice iff the key is numeric
         _items->keys.push_back(str);
     }
@@ -790,10 +790,10 @@ namespace fleece { namespace impl {
 
     // compares dictionary keys as slices. If a slice has a null `buf`, it represents an integer
     // key, whose value is in the `size` field.
-    static inline int compareKeysByIndex(const slice *sa, const slice *sb) {
+    static inline int compareKeysByIndex(const FLSlice *sa, const FLSlice *sb) {
         if (sa->buf) {
             if (sb->buf)
-                return sa->compare(*sb) < 0;                // string key comparison
+                return FLSlice_Compare(*sa, *sb) < 0;                // string key comparison
             else
                 return false;
         } else {
@@ -815,17 +815,17 @@ namespace fleece { namespace impl {
             if (keys[i].buf == nullptr) {
                 const Value *item = &items[2*i];
                 if (item->tag() == kStringTag) {
-                    keys[i].setBuf(offsetby(item, 1));                      // inline string
+                    keys[i].buf = offsetby(item, 1);                    // inline string
                 } else {
                     assert(item->tag() == kShortIntTag);
-                    keys[i] = slice(nullptr, (size_t)item->asUnsigned());   // integer
+                    keys[i] = {nullptr, (size_t)item->asUnsigned()};    // integer
                 }
             }
         }
 
         // Construct an array that describes the permutation of item indices:
-        TempArray(indices, const slice*, n);
-        const slice* base = &keys[0];
+        TempArray(indices, const FLSlice*, n);
+        const FLSlice* base = &keys[0];
         for (unsigned i = 0; i < n; i++)
             indices[i] = base + i;
         std::sort(&indices[0], &indices[n], &compareKeysByIndex);
