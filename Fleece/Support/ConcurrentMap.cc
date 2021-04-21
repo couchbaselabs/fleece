@@ -185,7 +185,7 @@ namespace fleece {
     const char* ConcurrentMap::allocKey(slice key) {
         auto result = (char*)_heap.alloc(key.size + 1);
         if (result) {
-            memcpy(result, key.buf, key.size);
+            key.copyTo(result);
             result[key.size] = 0;
         }
         return result;

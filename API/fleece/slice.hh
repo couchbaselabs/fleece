@@ -136,12 +136,11 @@ namespace fleece {
         const uint8_t* findAnyByteOf(pure_slice targetBytes) const noexcept FLPURE;
         const uint8_t* findByteNotIn(pure_slice targetBytes) const noexcept FLPURE;
 
-        inline int compare(pure_slice) const noexcept FLPURE;
+        inline int compare(pure_slice s) const noexcept FLPURE    {return FLSlice_Compare(*this,s);}
         inline int caseEquivalentCompare(pure_slice) const noexcept FLPURE;
         inline bool caseEquivalent(pure_slice) const noexcept FLPURE;
 
-        bool operator==(const pure_slice &s) const noexcept FLPURE       {return size==s.size &&
-                                                                 memcmp(buf, s.buf, size) == 0;}
+        bool operator==(const pure_slice &s) const noexcept FLPURE  {return FLSlice_Equal(*this,s);}
         bool operator!=(const pure_slice &s) const noexcept FLPURE       {return !(*this == s);}
         bool operator<(pure_slice s) const noexcept FLPURE               {return compare(s) < 0;}
         bool operator>(pure_slice s) const noexcept FLPURE               {return compare(s) > 0;}
@@ -160,7 +159,7 @@ namespace fleece {
         /// Returns new malloc'ed slice containing same data. Call free() on it when done.
         inline slice copy() const;
 
-        void copyTo(void *dst) const                {memcpy(dst, buf, size);}
+        void copyTo(void *dst) const                {if (size > 0) ::memcpy(dst, buf, size);}
 
         explicit operator std::string() const       {return std::string((const char*)buf, size);}
         std::string asString() const                {return (std::string)*this;}
@@ -497,7 +496,8 @@ namespace fleece {
 
     inline bool pure_slice::toCString(char *str, size_t bufSize) const noexcept {
         size_t n = std::min(size, bufSize-1);
-        ::memcpy(str, buf, n);
+        if (n > 0)
+            ::memcpy(str, buf, n);
         str[n] = 0;
         return n == size;
     }
@@ -517,21 +517,6 @@ namespace fleece {
 
 
 #pragma mark - COMPARISON:
-
-
-    __hot
-    inline int pure_slice::compare(pure_slice b) const noexcept {
-        // Optimized for speed
-        if (this->size == b.size)
-            return ::memcmp(this->buf, b.buf, this->size);
-        else if (this->size < b.size) {
-            int result = ::memcmp(this->buf, b.buf, this->size);
-            return result ? result : -1;
-        } else {
-            int result = ::memcmp(this->buf, b.buf, b.size);
-            return result ? result : 1;
-        }
-    }
 
 
     __hot
@@ -697,7 +682,7 @@ namespace fleece {
     inline alloc_slice alloc_slice::nullPaddedString(pure_slice str) {
         // Leave a trailing null byte after the end, so it can be used as a C string
         alloc_slice a(str.size + 1);
-        ::memcpy((char*)a.buf, str.buf, str.size);
+        str.copyTo((void*)a.buf);
         ((char*)a.buf)[str.size] = '\0';
         a.shorten(str.size);            // the null byte is not part of the slice
         return a;
@@ -742,6 +727,8 @@ namespace fleece {
 
 
     inline void alloc_slice::append(pure_slice suffix) {
+        if (_usuallyFalse(suffix.size == 0))
+            return;
         if (buf)
             assert_precondition(!containsAddress(suffix.buf) && !containsAddress(suffix.end()));
         size_t oldSize = size;

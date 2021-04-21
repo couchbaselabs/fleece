@@ -400,14 +400,7 @@ namespace fleece {
     }
 
     int64_t ParseISO8601Date(fleece::slice date) {
-        auto cstr = (char*)malloc(date.size + 1);
-        if (!cstr)
-            return kInvalidDate;
-        memcpy(cstr, date.buf, date.size);
-        cstr[date.size] = 0;
-        int64_t timestamp = ParseISO8601Date(cstr);
-        free(cstr);
-        return timestamp;
+        return ParseISO8601Date(string(date).c_str());
     }
 
     slice FormatISO8601Date(char buf[], int64_t time, bool asUTC) {

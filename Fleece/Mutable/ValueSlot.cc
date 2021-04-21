@@ -200,7 +200,7 @@ namespace fleece { namespace impl {
     void ValueSlot::setValue(tags valueTag, int tiny, slice bytes) {
         if (1 + bytes.size <= kInlineCapacity) {
             setInline(valueTag, tiny);
-            memcpy(&_inlineVal[1], bytes.buf, bytes.size);
+            bytes.copyTo(&_inlineVal[1]);
         } else {
             setPointer(HeapValue::create(valueTag, tiny, bytes)->asValue());
         }
@@ -211,7 +211,7 @@ namespace fleece { namespace impl {
         if (s.size + 1 <= kInlineCapacity) {
             // Short strings can go inline:
             setInline(valueTag, (int)s.size);
-            memcpy(&_inlineVal[1], s.buf, s.size);
+            s.copyTo(&_inlineVal[1]);
         } else {
             setPointer(HeapValue::createStr(valueTag, s)->asValue());
         }

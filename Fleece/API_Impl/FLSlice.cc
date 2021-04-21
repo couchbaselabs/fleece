@@ -37,19 +37,30 @@ namespace fleece::wyhash32 {
 #endif
 
 
+// Note: These functions avoid passing NULL to memcmp, which is undefined behavior even when
+// the byte count is zero.
+// A slice's buf may only be NULL if its size is 0, so we check that first.
+
+
 bool FLSlice_Equal(FLSlice a, FLSlice b) noexcept {
-    return a.size==b.size && memcmp(a.buf, b.buf, a.size) == 0;
+    return a.size==b.size && (a.size == 0 || memcmp(a.buf, b.buf, a.size) == 0);
 }
 
 
 int FLSlice_Compare(FLSlice a, FLSlice b) noexcept {
     // Optimized for speed
-    if (a.size == b.size)
+    if (a.size == b.size) {
+        if (a.size == 0)
+            return 0;
         return memcmp(a.buf, b.buf, a.size);
-    else if (a.size < b.size) {
+    } else if (a.size < b.size) {
+        if (a.size == 0)
+            return -1;
         int result = memcmp(a.buf, b.buf, a.size);
         return result ? result : -1;
     } else {
+        if (b.size == 0)
+            return 1;
         int result = memcmp(a.buf, b.buf, b.size);
         return result ? result : 1;
     }

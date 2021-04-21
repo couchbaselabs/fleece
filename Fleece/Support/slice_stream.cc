@@ -1,5 +1,5 @@
 //
-// slicestream.cc
+// slice_stream.cc
 //
 // Copyright © 2021 Couchbase. All rights reserved.
 //
@@ -66,6 +66,8 @@ namespace fleece {
             _overflowed = true;
             return false;
         }
+        if (_usuallyFalse(srcSize == 0))
+            return true;
         ::memcpy(_next, src, srcSize);
         _next += srcSize;
         return true;

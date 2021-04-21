@@ -120,7 +120,7 @@ namespace fleece {
         }
 
         inline void write(slice s) {
-            memcpy(_out, s.buf, s.size);
+            s.copyTo(_out);
             _out += s.size;
         }
 
