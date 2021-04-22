@@ -138,6 +138,14 @@ FLSliceResult FLSliceResult_New(size_t) FLAPI;
 /** Allocates an FLSliceResult, copying the given slice. */
 FLSliceResult FLSlice_Copy(FLSlice) FLAPI;
 
+
+/** Allocates an FLSliceResult, copying `size` bytes starting at `buf`. */
+static inline FLSliceResult FLSliceResult_CreateWith(const void *bytes, size_t size) FLAPI {
+    FLSlice s = {bytes, size};
+    return FLSlice_Copy(s);
+}
+
+
 void _FLBuf_Retain(const void*) FLAPI;   // internal; do not call
 void _FLBuf_Release(const void*) FLAPI;  // internal; do not call
 
@@ -150,6 +158,11 @@ static inline FLSliceResult FLSliceResult_Retain(FLSliceResult s) FLAPI {
 /** Decrements the ref-count of a FLSliceResult, freeing its memory if it reached zero. */
 static inline void FLSliceResult_Release(FLSliceResult s) FLAPI {
     _FLBuf_Release(s.buf);
+}
+
+/** Type-casts a FLSliceResult to FLSlice, since C doesn't know it's a subclass. */
+static inline FLSlice FLSliceResult_AsSlice(FLSliceResult sr) {
+    return *(FLSlice*)&sr;
 }
 
 
