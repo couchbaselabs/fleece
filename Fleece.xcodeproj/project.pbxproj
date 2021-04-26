@@ -416,6 +416,7 @@
 		27A0E3DD24DCD86900380563 /* ConcurrentArena.hh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ConcurrentArena.hh; sourceTree = "<group>"; };
 		27A0E3DE24DCD86900380563 /* ConcurrentArena.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ConcurrentArena.cc; sourceTree = "<group>"; };
 		27A2F73A21248DA40081927B /* FLSlice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLSlice.h; sourceTree = "<group>"; };
+		27A63F38263375B500634F7B /* date.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = date.h; sourceTree = "<group>"; };
 		27A924CD1D9C32E800086206 /* Path.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Path.cc; sourceTree = "<group>"; };
 		27A924CE1D9C32E800086206 /* Path.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Path.hh; sourceTree = "<group>"; };
 		27AEFAC021090FF400106ED8 /* JSONDelta.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JSONDelta.cc; sourceTree = "<group>"; };
@@ -620,6 +621,7 @@
 			isa = PBXGroup;
 			children = (
 				27E3DD461DB6B86000F2872D /* catch */,
+				27A63F35263375B500634F7B /* date */,
 				27298E3F1C00F8A9000CFBA8 /* jsonsl */,
 				277015321D596436008BADD7 /* libb64 */,
 				27D9656A23397EBD00F4A51C /* SwiftDtoa */,
@@ -746,6 +748,30 @@
 				279AC5331C096872002C80DB /* fleece_tool.cc */,
 			);
 			path = Tool;
+			sourceTree = "<group>";
+		};
+		27A63F35263375B500634F7B /* date */ = {
+			isa = PBXGroup;
+			children = (
+				27A63F36263375B500634F7B /* include */,
+			);
+			path = date;
+			sourceTree = "<group>";
+		};
+		27A63F36263375B500634F7B /* include */ = {
+			isa = PBXGroup;
+			children = (
+				27A63F37263375B500634F7B /* date */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		27A63F37263375B500634F7B /* date */ = {
+			isa = PBXGroup;
+			children = (
+				27A63F38263375B500634F7B /* date.h */,
+			);
+			path = date;
 			sourceTree = "<group>";
 		};
 		27A89D7C209FC44500C3BEB2 /* Mutable */ = {
