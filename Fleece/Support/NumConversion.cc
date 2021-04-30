@@ -92,24 +92,33 @@ namespace fleece {
     }
 
 
-    double ParseDouble(const char *str) noexcept {
+    bool ParseDouble(const char *str, double &result, bool allowTrailing) noexcept {
+        char *end;
         // strtod is locale-aware, so in some locales it will not interpret '.' as a decimal point.
         // To work around that, use the C locale explicitly.
         #ifdef LC_C_LOCALE          // Apple & BSD
-            return strtod_l(str, nullptr, LC_C_LOCALE);
+            result = strtod_l(str, &end, LC_C_LOCALE);
         #elif defined(_MSC_VER)     // Windows
             static _locale_t kCLocale = _create_locale(LC_ALL, "C");
-            return _strtod_l(str, nullptr, kCLocale);
+            result = _strtod_l(str, &end, kCLocale);
         #elif defined(__ANDROID__) && __ANDROID_API__ < 26
             // Note: Android only supports the following locales, all of which use
             // period, so no problem:  C, POSIX, en_US.  Android API 26 introduces
             // strtod_l, which maybe will be eventually implemented when and if more
             // locales come in
-            return strtod(str, nullptr);
+            result = strtod(str, &end);
         #else                       // Linux
             static locale_t kCLocale = newlocale(LC_ALL_MASK, "C", NULL);
-            return strtod_l(str, nullptr, kCLocale);
+            result = strtod_l(str, &end, kCLocale);
         #endif
+        return (allowTrailing || *end == '\0');
+    }
+
+
+    double ParseDouble(const char *str) noexcept {
+        double n;
+        (void)ParseDouble(str, n, true);
+        return n;
     }
 
 
