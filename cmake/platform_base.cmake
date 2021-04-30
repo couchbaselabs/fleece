@@ -10,6 +10,7 @@ function(set_source_files_base)
         Fleece/API_Impl/Fleece.cc
         Fleece/API_Impl/FLSlice.cc
         Fleece/Core/Array.cc
+        Fleece/Core/Builder.cc
         Fleece/Core/DeepIterator.cc
         Fleece/Core/Dict.cc
         Fleece/Core/Doc.cc
@@ -70,6 +71,7 @@ function(set_test_source_files_base)
         Tests/DeltaTests.cc
         Tests/EncoderTests.cc
         Tests/FleeceTests.cc
+        Tests/BuilderTests.cc
         Tests/FleeceTestsMain.cc
         Tests/HashTreeTests.cc
         Tests/JSON5Tests.cc

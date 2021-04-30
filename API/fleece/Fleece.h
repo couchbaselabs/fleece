@@ -21,6 +21,7 @@
 #define _FLEECE_H
 
 #include "FLSlice.h"
+#include <stdarg.h>
 #include <stdio.h>
 
 #ifdef __cplusplus
@@ -1166,6 +1167,63 @@ while (NULL != (value = FLDictIterator_GetValue(&iter))) {
     const char* FLEncoder_GetErrorMessage(FLEncoder NONNULL) FLAPI;
 
     /** @} */
+    /** @} */
+
+
+    //////// FORMATTED VALUE BUILDER
+
+
+    /** \defgroup builder   Fleece Formatted Value Builder
+         @{
+        These functions use the `printf` idiom to make it convenient to create structured Fleece
+        values in memory with one call. They create or modify a `FLMutableArray` or `FLMutableDict
+        by reading the given format string and the following arguments.
+
+        The format string is basically JSON5, except that any value in it may be a printf-style
+        '%' specifier instead of a literal, in which case that value will be read from the next
+        argument. The supported format specifiers are:
+
+        - Boolean:           `%c` (cast the arg to `char` to avoid a compiler warning)
+        - Integer:           `%i` or `%d` (use size specifiers `l`, `ll`, or `z`)
+        - Unsigned integer:  `%u` (use size specifiers `l`, `ll`, or `z`)
+        - Floating point:    `%f` (arg can be `float` or `double`; no size spec needed)
+        - C string:          `%s`
+        - Ptr+length string: `%.*s` (takes two args, a `const char*` and an `int`. See `FMTSLICE`.)
+        - Fleece value:      `%p` (arg must be a `FLValue`)
+
+        A `-` can appear after the `%`, indicating that the argument should be ignored if it has
+        a default value, namely `false`, 0, or an empty string. This means the corresponding item
+        won't be written (a Dict item will be erased if it previously existed.)
+
+        If a string/value specifier is given a NULL pointer, nothing is written, and any
+        pre-existing Dict item will be removed.
+
+        \note It's legal for a dict key to be repeated; later occurrences take precedence,
+            i.e. each one overwrites the last.
+      */
+
+    /** Translates the JSON-style format string into a tree of mutable Fleece objects, adding
+        values from the following arguments wherever a printf-style `%` specifier appears.
+        \note  The result will be either an `FLMutableArray` or `FLMutableString` depending on
+                the syntax of the format string.
+        \warning  The returned value must be released when you're done with it. */
+    FLValue FLValue_NewWithFormat(const char *format, ...) __printflike(1, 2);
+
+    /** Variant of \ref FLValue_NewWithFormat that takes a pre-existing `va_list`. */
+    FLValue FLValue_NewWithFormatV(const char *format, va_list args);
+
+    /** Like \ref FLValue_NewWithFormat, except it operates on an existing mutable array.
+        The values parsed from the format string and arguments will be appended to it. */
+    void FLMutableArray_UpdateWithFormat(FLMutableArray, const char *format, ...) __printflike(2, 3);
+
+    /** Like \ref FLValue_NewWithFormat, except it operates on an existing mutable dict.
+        (Pre-existing properties not appearing in the format string are preserved.) */
+    void FLMutableDict_UpdateWithFormat(FLMutableDict, const char *format, ...) __printflike(2, 3);
+
+    /** Like \ref FLMutableArray_UpdateWithFormat / \ref FLMutableDict_UpdateWithFormat
+        but takes a pre-existing `va_list`. */
+    void FLValue_UpdateWithFormatV(FLValue, const char *format, va_list args);
+
     /** @} */
 
 

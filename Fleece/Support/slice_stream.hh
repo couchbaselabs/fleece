@@ -186,6 +186,10 @@ namespace fleece {
         /// Reads the next byte. If the stream is already at EOF, returns 0.
         uint8_t readByte() noexcept;
 
+        /// Un-does the last call to \ref readByte, i.e. moves back one byte.
+        /// \warning Not range checked: moving back before the start is undefined behavior.
+        void unreadByte() noexcept                              {slice::moveStart(-1);}
+
         /// Returns the next byte, or 0 if at EOF, but does not advance the stream.
         uint8_t peekByte() const noexcept FLPURE            {return (size > 0) ? (*this)[0] : 0;}
 
