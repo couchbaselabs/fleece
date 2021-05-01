@@ -38,6 +38,12 @@
     // Typically this is because the return value is something that must be released/freed.
     #define MUST_USE_RESULT                 __attribute__((warn_unused_result))
 
+    #ifndef __printflike
+        // Declares this function takes a printf-like format string, and the subsequent args should
+        // be type-checked against it.
+        #define __printflike(fmtarg, varg) __attribute__((__format__ (__printf__, fmtarg, varg)))
+    #endif
+
     // These have no effect on behavior, but they hint to the optimizer which branch of an 'if'
     // statement to make faster.
     #define _usuallyTrue(VAL)               __builtin_expect(VAL, true)
@@ -45,6 +51,10 @@
 #else
     #define RETURNS_NONNULL
     #define MUST_USE_RESULT
+
+    #ifndef __printflike
+        #define __printflike(fmtarg, varg)
+    #endif
 
     #define _usuallyTrue(VAL)               (VAL)
     #define _usuallyFalse(VAL)              (VAL)
