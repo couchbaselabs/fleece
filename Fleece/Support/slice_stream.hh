@@ -43,8 +43,8 @@ namespace fleece {
         // Utility that allocates a buffer, lets the callback write into it, then trims the buffer.
         // The callback must take a `slice_ostream&` parameter and return `bool`.
         // (If you need a growable buffer, use a \ref Writer instead.)
-        template <class CALLBACK>
-        static alloc_slice alloced(size_t maxSize, const CALLBACK &writer) {
+        template <class Callback>
+        static alloc_slice alloced(size_t maxSize, const Callback &writer) {
             alloc_slice buf(maxSize);
             slice_ostream out(buf);
             if (!writer(out) || out.overflowed())

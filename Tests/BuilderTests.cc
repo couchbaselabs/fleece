@@ -56,7 +56,8 @@ TEST_CASE("Builder Literals", "[Builder]") {
 TEST_CASE("Builder String Literals", "[Builder]") {
     auto v = builder::Build(R"({a : 'foo\'', $b : "bar\"rab", _c_ : "", _ : "\r\\"})");
     REQUIRE(v);
-    CHECK(v->toJSONString() == R"({"$b":"bar\"rab","_":"\r\\","_c_":"","a":"foo'"})");
+    std::string expected = R"({"$b":"bar\"rab","_":"\r\\","_c_":"","a":"foo'"})";
+    CHECK(v->toJSONString() == expected);
 }
 
 
