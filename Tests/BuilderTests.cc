@@ -108,14 +108,16 @@ TEST_CASE("Builder Integer Params", "[Builder]") {
     unsigned long long ull = ULLONG_MAX;
     ptrdiff_t p0 = PTRDIFF_MIN, p1 = PTRDIFF_MAX;
     size_t z1 = SIZE_MAX;
-    auto v = builder::Build("[[%d, %d, %u], [%ld,%ld,%lu], [%lld,%lld,%llu], [%qd,%qd,%qu], [%zd,%zd,%zu]]",
-                              i0, i1, u,     l0, l1, ul,    ll0, ll1, ull,    ll0,ll1,ull,   p0, p1, z1);
-    CHECK(v->toJSONString() ==
-          "[[-2147483648,2147483647,4294967295],"
-          "[-9223372036854775808,9223372036854775807,18446744073709551615],"
-          "[-9223372036854775808,9223372036854775807,18446744073709551615],"
-          "[-9223372036854775808,9223372036854775807,18446744073709551615],"
-          "[-9223372036854775808,9223372036854775807,18446744073709551615]]");
+    auto v = builder::Build("[[%d, %d, %u], [%ld,%ld,%lu], [%lld,%lld,%llu], [%zd,%zd,%zu]]",
+                               i0, i1, u,     l0, l1, ul,    ll0, ll1, ull,    p0, p1, z1);
+    std::string expected32 = "[-2147483648,2147483647,4294967295]";
+    std::string expected64 = "[-9223372036854775808,9223372036854775807,18446744073709551615]";
+    std::string expected =
+        "[" + (sizeof(int)       == 8 ? expected64 : expected32) + ","
+            + (sizeof(long)      == 8 ? expected64 : expected32) + ","
+            + (sizeof(long long) == 8 ? expected64 : expected32) + ","
+            + (sizeof(size_t)    == 8 ? expected64 : expected32) + "]";
+    CHECK(v->toJSONString() == expected);
 }
 
 
