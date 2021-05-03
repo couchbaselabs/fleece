@@ -37,8 +37,6 @@
 
     #define MAXFLOAT FLT_MAX
 
-    #define __printflike(A, B)
-
     #define cbl_strdup _strdup
     #define cbl_getcwd _getcwd
 
@@ -71,12 +69,6 @@
         #define ASSUME(cond)                __builtin_assume(cond)
     #else
         #define ASSUME(cond)                (void(0))
-    #endif
-
-    // Declares this function takes a printf-like format string, and the subsequent args should
-    // be type-checked against it.
-    #ifndef __printflike
-    #define __printflike(fmtarg, firstvararg) __attribute__((__format__ (__printf__, fmtarg, firstvararg)))
     #endif
 
     // Windows has underscore prefixes before these function names, so define a common name

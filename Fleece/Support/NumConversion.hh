@@ -40,9 +40,17 @@ namespace fleece {
         return ParseInteger(str, r, t);
     }
 
-    
+
+    /// Parse `str` as a floating-point number, storing the result in `result` and returning true.
+    /// Returns false if the string is not a valid number, or if the result would overflow or
+    /// underflow a `double`.
+    /// If `allowTrailing` is false it also rejects anything but whitespace after the last digit.
+    bool ParseDouble(const char *str, double &result, bool allowTrailing =false) noexcept;
+
     /// Parse `str` as a floating-point number, reading as many digits as possible.
-    /// (I.e. non-numeric characters after the digits are not treated as an error.)
+    /// (I.e. it ignores characters after the last valid digit.)
+    /// Returns 0.0 if there are no digits to read at all.
+    /// Returns ± `HUGE_VAL` on overflow, 0.0 on underflow.
     double ParseDouble(const char *str NONNULL) noexcept;
 
 

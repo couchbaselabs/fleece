@@ -198,6 +198,9 @@
 		27DE2EEB2125FC9300123597 /* FleeceException.cc in Sources */ = {isa = PBXBuildFile; fileRef = 275CED501D3EF7BE001DE46C /* FleeceException.cc */; };
 		27DFAE12219F83AB00DF57EB /* InstanceCounted.hh in Headers */ = {isa = PBXBuildFile; fileRef = 27DFAE10219F83AB00DF57EB /* InstanceCounted.hh */; };
 		27DFAE13219F83AB00DF57EB /* InstanceCounted.cc in Sources */ = {isa = PBXBuildFile; fileRef = 27DFAE11219F83AB00DF57EB /* InstanceCounted.cc */; };
+		27E3CE0F263B1B0700CA7056 /* Builder.hh in Headers */ = {isa = PBXBuildFile; fileRef = 27E3CE0D263B1B0700CA7056 /* Builder.hh */; };
+		27E3CE10263B1B0700CA7056 /* Builder.cc in Sources */ = {isa = PBXBuildFile; fileRef = 27E3CE0E263B1B0700CA7056 /* Builder.cc */; };
+		27E3CE12263B525E00CA7056 /* BuilderTests.cc in Sources */ = {isa = PBXBuildFile; fileRef = 27E3CE11263B525E00CA7056 /* BuilderTests.cc */; };
 		27E3DD421DB6A14200F2872D /* SharedKeys.cc in Sources */ = {isa = PBXBuildFile; fileRef = 27E3DD401DB6A14200F2872D /* SharedKeys.cc */; };
 		27E3DD431DB6A14200F2872D /* SharedKeys.hh in Headers */ = {isa = PBXBuildFile; fileRef = 27E3DD411DB6A14200F2872D /* SharedKeys.hh */; };
 		27E3DD4C1DB6C32400F2872D /* CaseListReporter.hh in Headers */ = {isa = PBXBuildFile; fileRef = 27E3DD4A1DB6C32400F2872D /* CaseListReporter.hh */; };
@@ -461,6 +464,9 @@
 		27DE2EDF2125FA1700123597 /* libfleeceBase.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libfleeceBase.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		27DFAE10219F83AB00DF57EB /* InstanceCounted.hh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = InstanceCounted.hh; sourceTree = "<group>"; };
 		27DFAE11219F83AB00DF57EB /* InstanceCounted.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = InstanceCounted.cc; sourceTree = "<group>"; };
+		27E3CE0D263B1B0700CA7056 /* Builder.hh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Builder.hh; sourceTree = "<group>"; };
+		27E3CE0E263B1B0700CA7056 /* Builder.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Builder.cc; sourceTree = "<group>"; };
+		27E3CE11263B525E00CA7056 /* BuilderTests.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = BuilderTests.cc; sourceTree = "<group>"; };
 		27E3DD401DB6A14200F2872D /* SharedKeys.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SharedKeys.cc; sourceTree = "<group>"; };
 		27E3DD411DB6A14200F2872D /* SharedKeys.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SharedKeys.hh; sourceTree = "<group>"; };
 		27E3DD471DB6B86000F2872D /* catch.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = catch.hpp; sourceTree = "<group>"; };
@@ -648,6 +654,7 @@
 				27F666432017E26700A8ED31 /* SupportTests.cc */,
 				279AC52A1C07776A002C80DB /* ValueTests.cc */,
 				272E5A5B1BF800A100848580 /* EncoderTests.cc */,
+				27E3CE11263B525E00CA7056 /* BuilderTests.cc */,
 				27E3DD521DB7DB1C00F2872D /* SharedKeysTests.cc */,
 				276D15481E008E7A00543B1B /* JSON5Tests.cc */,
 				27298E771C01A461000CFBA8 /* PerfTests.cc */,
@@ -879,6 +886,8 @@
 				27A924CE1D9C32E800086206 /* Path.hh */,
 				27298E7F1C04E665000CFBA8 /* Encoder.cc */,
 				270FA26F1BF53CEA005DCB13 /* Encoder.hh */,
+				27E3CE0E263B1B0700CA7056 /* Builder.cc */,
+				27E3CE0D263B1B0700CA7056 /* Builder.hh */,
 				27298E3A1C00F812000CFBA8 /* JSONConverter.cc */,
 				27298E761C00FB48000CFBA8 /* JSONConverter.hh */,
 				27E3DD401DB6A14200F2872D /* SharedKeys.cc */,
@@ -968,6 +977,7 @@
 				2734B8AD1F859AEC00BE5249 /* FleeceDocument.h in Headers */,
 				2776AA792093C982004ACE85 /* sliceIO.hh in Headers */,
 				278163BD1CE7A72300B94E32 /* KeyTree.hh in Headers */,
+				27E3CE0F263B1B0700CA7056 /* Builder.hh in Headers */,
 				27C4ACAD1CE5146500938365 /* Array.hh in Headers */,
 				2776AA22208678AA004ACE85 /* DeepIterator.hh in Headers */,
 				2734B89E1F8583FF00BE5249 /* MArray.hh in Headers */,
@@ -1306,6 +1316,7 @@
 				27A924CF1D9C32E800086206 /* Path.cc in Sources */,
 				274D824C209A7577008BB39F /* HeapArray.cc in Sources */,
 				2734B8B11F870FB400BE5249 /* MContext.cc in Sources */,
+				27E3CE10263B1B0700CA7056 /* Builder.cc in Sources */,
 				27A0E3E024DCD86900380563 /* ConcurrentArena.cc in Sources */,
 				275CED521D3EF7BE001DE46C /* FleeceException.cc in Sources */,
 				278163B51CE69CA800B94E32 /* Fleece.cc in Sources */,
@@ -1351,6 +1362,7 @@
 				27298E781C01A461000CFBA8 /* PerfTests.cc in Sources */,
 				2734B8A71F85842300BE5249 /* MTests.mm in Sources */,
 				272E5A5F1BF91DBE00848580 /* ObjCTests.mm in Sources */,
+				27E3CE12263B525E00CA7056 /* BuilderTests.cc in Sources */,
 				277F45B4208FDA1800A0D159 /* HashTreeTests.cc in Sources */,
 				27CEE41A20EFE92E00089A85 /* KeyTree.cc in Sources */,
 			);
